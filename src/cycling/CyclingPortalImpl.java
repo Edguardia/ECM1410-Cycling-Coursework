@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 
 public class CyclingPortalImpl implements MiniCyclingPortal {
 
@@ -57,7 +55,13 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
-        return 0;
+        if (races.containsKey(raceId)){
+            
+            return 
+        }
+        else{
+            throw new IDNotRecognisedException();
+        }
     }
 
     @Override
@@ -70,7 +74,8 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         }
         if(stageName == null || stageName == "" || stageName.length() > 30 || stageName.contains(" ")){ throw new InvalidNameException(); }
         if (length < 5){ throw new InvalidLengthException(); }
-
+        Stage newStage = new Stage(stageName, description, length, startTime, type);
+        
         return 0;
     }
 
