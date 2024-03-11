@@ -3,27 +3,46 @@ package cycling;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 
 public class CyclingPortalImpl implements MiniCyclingPortal {
 
+    HashMap<Integer, Race> races = new HashMap<Integer, Race>();
+    HashMap<Integer, Stage> stages = new HashMap<Integer, Stage>();
+    HashMap<Integer, Checkpoint> checkpoints = new HashMap<Integer, Checkpoint>();
+    HashMap<Integer, Rider> riders = new HashMap<Integer, Rider>();
+    HashMap<Integer, Team> teams = new HashMap<Integer, Team>();
+
+
     @Override
     public int[] getRaceIds() {
+
         return new int[0];
     }
 
     @Override
     public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
+        races.
         return 0;
     }
 
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
-        return null;
+        if (races.containsKey(raceId)){
+            return races.get(raceId).getRaceDescription();
+        }
+        else { throw new IDNotRecognisedException(); }
     }
 
     @Override
     public void removeRaceById(int raceId) throws IDNotRecognisedException {
-
+        if (races.containsKey(raceId)){
+            races.remove(raceId);
+        }
+        else{ throw new IDNotRecognisedException(); }
     }
 
     @Override
@@ -78,27 +97,52 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int createTeam(String name, String description) throws IllegalNameException, InvalidNameException {
-        return 0;
+        if(name == null || name == "" || name.length() > 30 || name.contains(" ")){
+            throw new InvalidNameException();
+        }
+        for(Team i : teams.values()){
+            if(i.getTeamName() == name){
+                throw new IllegalNameException();
+            }
+        }
+        Team newTeam = new Team(name, description);
+        teams.put(newTeam.getTeamID(), newTeam);
+        return newTeam.getTeamID();
     }
 
     @Override
     public void removeTeam(int teamId) throws IDNotRecognisedException {
-
+        if (teams.containsKey(teamId)){
+            teams.remove(teamId);
+        }
+        else{ throw new IDNotRecognisedException(); }
     }
 
     @Override
     public int[] getTeams() {
-        return new int[0];
+        ArrayList<Integer> teamlist = new ArrayList<Integer>();
+        teamlist.addAll((teams.keySet()));
+        return teamlist.stream().mapToInt(i -> i).toArray();
     }
 
     @Override
     public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
+
         return new int[0];
     }
 
     @Override
     public int createRider(int teamID, String name, int yearOfBirth) throws IDNotRecognisedException, IllegalArgumentException {
-        return 0;
+        if (!teams.containsKey(teamID)){
+            throw new IDNotRecognisedException();
+        }
+        else if(name == null || name == "" || yearOfBirth < 1900){
+            throw new IllegalArgumentException();
+        }
+        Rider newRider = new Rider(teamID, name, yearOfBirth);
+        riders.put(newRider.getRiderID(), newRider);
+        teams.get(teamID).add
+        return newRider.getRiderID();
     }
 
     @Override

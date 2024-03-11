@@ -13,6 +13,10 @@ public class Stage {
     private LocalTime startTime;
     private Checkpoint[] checkpoints;
 
+    public Stage(){
+
+    }
+
     public int getStageID(){
         return stageId;
     }
