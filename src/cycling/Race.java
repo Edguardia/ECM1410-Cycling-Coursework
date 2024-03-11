@@ -1,6 +1,7 @@
 package cycling;
 
 import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Race {
     
@@ -9,6 +10,14 @@ public class Race {
     private String raceDescription;
     private int[] riderIds;
     private Stage[] stages;
+
+    private AtomicInteger currentId = new AtomicInteger(0);
+
+    public Race(String raceName, String raceDescription){
+        this.raceName = raceName;
+        this.raceDescription = raceDescription;
+        this.raceId = currentId.getAndIncrement();
+    }
 
     public int getRaceID(){
         return raceId;

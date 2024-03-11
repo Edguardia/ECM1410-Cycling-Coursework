@@ -1,11 +1,21 @@
 package cycling;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Team {
     
     private int teamId;
     private String teamName;
     private String teamDescription;
     private Rider[] riders;
+
+    private AtomicInteger currentId = new AtomicInteger(0);
+
+    public Team(String teamName, String teamDescription){
+        this.teamId = currentId.getAndIncrement();
+        this.teamName = teamName;
+        this.teamDescription = teamDescription;
+        }
 
     public int getTeamID(){
         return teamId;

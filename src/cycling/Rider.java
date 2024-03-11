@@ -1,14 +1,24 @@
 package cycling;
 
 import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rider {
-    
+
     private int riderId;
     private String name;
     private int yearOfBirth;
     private int teamId;
     private LocalTime[] checkpointTimes;
+
+    private AtomicInteger currentId = new AtomicInteger(0);
+
+    public Rider(int teamId, String name, int yearOfBirth){
+        this.teamId = teamId;
+        this.name = name;
+        this.yearOfBirth = yearOfBirth;
+        this.riderId = currentId.getAndIncrement();
+    }
 
     public int getRiderID(){
         return riderId;
