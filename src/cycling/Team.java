@@ -1,5 +1,7 @@
 package cycling;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Team {
@@ -7,7 +9,7 @@ public class Team {
     private int teamId;
     private String teamName;
     private String teamDescription;
-    private Rider[] riders;
+    private ArrayList<Integer> riderIds;
 
     private AtomicInteger currentId = new AtomicInteger(0);
 
@@ -15,6 +17,7 @@ public class Team {
         this.teamId = currentId.getAndIncrement();
         this.teamName = teamName;
         this.teamDescription = teamDescription;
+
         }
 
     public int getTeamID(){
@@ -26,8 +29,8 @@ public class Team {
     public String getTeamDescription(){
         return teamDescription;
     }
-    public Rider[] getRiders(){
-        return riders;
+    public int[] getRiders(){
+        return riderIds.stream().mapToInt(i -> i).toArray();
     }
     public void setTeamID(int teamId){
         this.teamId = teamId;
@@ -38,7 +41,12 @@ public class Team {
     public void setTeamDescription(String teamDescription){
         this.teamDescription = teamDescription;
     }
-    public void setRiders(Rider[] riders){
-        this.riders = riders;
+
+
+    public void addRider(int riderId){
+        riderIds.add(riderId);
+    }
+    public void deleteRider(int riderId){
+        riderIds.remove(riderId);
     }
 }
