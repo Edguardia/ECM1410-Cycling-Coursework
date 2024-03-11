@@ -1,0 +1,1 @@
+- Check the relationship between rider with stage and rider with race

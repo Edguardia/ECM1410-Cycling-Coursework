@@ -11,7 +11,7 @@ public class Team {
     private String teamDescription;
     private ArrayList<Integer> riderIds;
 
-    private AtomicInteger currentId = new AtomicInteger(0);
+    static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Team(String teamName, String teamDescription){
         this.teamId = currentId.getAndIncrement();
@@ -42,11 +42,13 @@ public class Team {
         this.teamDescription = teamDescription;
     }
 
-
     public void addRider(int riderId){
         riderIds.add(riderId);
     }
     public void deleteRider(int riderId){
         riderIds.remove(riderId);
+    }
+    static public void atomicReset(){
+        currentId.set(0);
     }
 }

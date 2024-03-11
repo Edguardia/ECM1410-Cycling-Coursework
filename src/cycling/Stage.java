@@ -1,6 +1,8 @@
 package cycling;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Stage {
 
@@ -10,13 +12,19 @@ public class Stage {
     private Double length;
     private String state;
     private StageType type;
-    private LocalTime startTime;
+    private LocalDateTime startTime;
     private Checkpoint[] checkpoints;
 
-    public Stage(){
+    static private AtomicInteger currentId = new AtomicInteger(0);
 
+    public Stage(String stageName, String description, double length, LocalDateTime startTime, StageType type){
+        this.stageName = stageName;
+        this.description = description;
+        this.length = length;
+        this.startTime = startTime;
+        this.type = type;
+        this.stageId = currentId.getAndIncrement();
     }
-
     public int getStageID(){
         return stageId;
     }
@@ -35,7 +43,7 @@ public class Stage {
     public StageType getStageType(){
         return type;
     }
-    public LocalTime getStartTime(){
+    public LocalDateTime getStartTime(){
         return startTime;
     }
     public Checkpoint[] getCheckpoints(){
@@ -59,10 +67,13 @@ public class Stage {
     public void setType(StageType type){
         this.type = type;
     }
-    public void setstartTime(LocalTime startTime){
+    public void setstartTime(LocalDateTime startTime){
         this.startTime = startTime;
     }
     public void setStageID(Checkpoint[] checkpoints){
         this.checkpoints = checkpoints;
+    }
+    static public void atomicReset(){
+        currentId.set(0);
     }
 }

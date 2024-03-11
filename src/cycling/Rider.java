@@ -11,7 +11,7 @@ public class Rider {
     private int teamId;
     private LocalTime[] checkpointTimes;
 
-    private AtomicInteger currentId = new AtomicInteger(0);
+    static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Rider(int teamId, String name, int yearOfBirth){
         this.teamId = teamId;
@@ -49,5 +49,8 @@ public class Rider {
     }
     public void setCheckpointTimes(LocalTime[] checkpointTimes){
         this.checkpointTimes = checkpointTimes;
+    }
+    static public void atomicReset(){
+        currentId.set(0);
     }
 }

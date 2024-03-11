@@ -1,5 +1,7 @@
 package cycling;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 public class Checkpoint {
     
     private int checkpointId;
@@ -8,6 +10,19 @@ public class Checkpoint {
     private Double averageGradient;
     private CheckpointType type;
 
+    static private AtomicInteger currentId = new AtomicInteger(0);
+
+    public Checkpoint(Double location, CheckpointType type, Double length, Double averageGradient){
+        this.location = location;
+        this.length = length;
+        this.averageGradient = averageGradient;
+        this.type = type;
+        this.checkpointId = currentId.getAndIncrement();
+    }
+    public Checkpoint(Double location){
+        this.location = location;
+        this.checkpointId = currentId.getAndIncrement();
+    }
     public int getCheckpointID(){
         return checkpointId;
     }
@@ -37,5 +52,8 @@ public class Checkpoint {
     }
     public void setType(CheckpointType type){
         this.type = type;
+    }
+    static public void atomicReset(){
+        currentId.set(0);
     }
 }

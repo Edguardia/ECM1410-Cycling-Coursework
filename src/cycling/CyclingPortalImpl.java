@@ -19,14 +19,24 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int[] getRaceIds() {
-
-        return new int[0];
+        ArrayList<Integer> raceList = new ArrayList<Integer>();
+        raceList.addAll((races.keySet()));
+        return raceList.stream().mapToInt(i -> i).toArray();
     }
 
     @Override
     public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
-        races.
-        return 0;
+        if(name == null || name == "" || name.length() > 30 || name.contains(" ")){
+            throw new InvalidNameException();
+        }
+        for(Race i : races.values()){
+            if(i.getRaceName() == name){
+                throw new IllegalNameException();
+            }
+        }
+        Race newRace = new Race(name, description);
+        races.put(newRace.getRaceID(), newRace);
+        return newRace.getRaceID();
     }
 
     @Override
@@ -52,6 +62,15 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int addStageToRace(int raceId, String stageName, String description, double length, LocalDateTime startTime, StageType type) throws IDNotRecognisedException, IllegalNameException, InvalidNameException, InvalidLengthException {
+        if (!races.containsKey(raceId)){ throw new IDNotRecognisedException(); }
+        for(Stage i : stages.values()){
+            if(i.getStageName() == stageName){
+                throw new IllegalNameException();
+            }
+        }
+        if(stageName == null || stageName == "" || stageName.length() > 30 || stageName.contains(" ")){ throw new InvalidNameException(); }
+        if (length < 5){ throw new InvalidLengthException(); }
+
         return 0;
     }
 
@@ -67,7 +86,12 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public void removeStageById(int stageId) throws IDNotRecognisedException {
-
+        if (stages.containsKey(stageId)){
+            int raceId = riders.get(stageId).getTeamID();
+            races.get(raceId).deleteStage(stageId);
+            races.remove(stageId);
+        }
+        else{ throw new IDNotRecognisedException(); }
     }
 
     @Override
@@ -127,8 +151,12 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int[] getTeamRiders(int teamId) throws IDNotRecognisedException {
-
-        return new int[0];
+        if (teams.containsKey(teamId)){
+            return teams.get(teamId).getRiders();
+        }
+        else{
+            throw new IDNotRecognisedException();
+        }
     }
 
     @Override
@@ -141,13 +169,20 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         }
         Rider newRider = new Rider(teamID, name, yearOfBirth);
         riders.put(newRider.getRiderID(), newRider);
-        teams.get(teamID).add
+        teams.get(teamID).addRider(newRider.getRiderID());
         return newRider.getRiderID();
     }
 
     @Override
     public void removeRider(int riderId) throws IDNotRecognisedException {
-
+        if (riders.containsKey(riderId)){
+            int teamId = riders.get(riderId).getTeamID();
+            teams.get(teamId).deleteRider(riderId);
+            riders.remove(riderId);
+        }
+        else{
+            throw new IDNotRecognisedException();
+        }
     }
 
     @Override
@@ -192,7 +227,16 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public void eraseCyclingPortal() {
-
+        Race.atomicReset();
+        races.clear();
+        Stage.atomicReset();
+        stages.clear();
+        Checkpoint.atomicReset();
+        checkpoints.clear();
+        Rider.atomicReset();
+        riders.clear();
+        Team.atomicReset();
+        teams.clear();
     }
 
     @Override

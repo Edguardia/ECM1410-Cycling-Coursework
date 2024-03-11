@@ -1,6 +1,7 @@
 package cycling;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Race {
@@ -8,10 +9,10 @@ public class Race {
     private int raceId;
     private String raceName;
     private String raceDescription;
-    private int[] riderIds;
-    private Stage[] stages;
+    private ArrayList<Integer> riderIds;
+    private ArrayList<Integer> stageIds;
 
-    private AtomicInteger currentId = new AtomicInteger(0);
+    static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Race(String raceName, String raceDescription){
         this.raceName = raceName;
@@ -29,10 +30,10 @@ public class Race {
         return raceDescription;
     }
     public int[] getRiderIDs(){
-        return riderIds;
+        return riderIds.stream().mapToInt(i -> i).toArray();
     }
-    public Stage[] getStages(){
-        return stages;
+    public int[] getStages(){
+        return stageIds.stream().mapToInt(i -> i).toArray();
     }
     public void setRaceID(int raceId){
         this.raceId = raceId;
@@ -43,10 +44,20 @@ public class Race {
     public void setRaceDescription(String raceDescription){
         this.raceDescription = raceDescription;
     }
-    public void setRiderIDs(int[] riderIds){
-        this.riderIds = riderIds;
+
+    public void addStage(int stageId){
+        stageIds.add(stageId);
     }
-    public void setStages(Stage[] stages){
-        this.stages = stages;
+    public void deleteStage(int stageId){
+        stageIds.remove(stageId);
+    }
+    public void addRider(int riderId){
+        riderIds.add(riderId);
+    }
+    public void deleteRider(int riderId){
+        riderIds.remove(riderId);
+    }
+    static public void atomicReset(){
+        currentId.set(0);
     }
 }
