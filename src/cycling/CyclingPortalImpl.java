@@ -17,6 +17,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     HashMap<Integer, Race> races = new HashMap<>();
     HashMap<Integer, Stage> stages = new HashMap<>();
+    HashMap<Integer, Checkpoint> checkpoints = new HashMap<>();
     HashMap<Integer, Rider> riders = new HashMap<>();
     HashMap<Integer, Team> teams = new HashMap<>();
 
@@ -134,11 +135,11 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         else if (stages.get(stageId).getStageType().toString().equals("TT")){
             throw new InvalidStageTypeException();
         }
-        Checkpoint newCheckpoint = new Checkpoint(location, type, length, averageGradient);
+        Checkpoint newCheckpoint = new Checkpoint(stageId, location, type, length, averageGradient);
         Stage stage = stages.get(stageId);
-        stage.addCheckpoint(newCheckpoint.getCheckpointID());
-        stages.put(stage.getStageID(), stage);
+        stage.addCheckpointID(newCheckpoint.getCheckpointID());
         checkpoints.put(newCheckpoint.getCheckpointID(), newCheckpoint);
+        stages.put(stage.getStageID(), stage);
         return newCheckpoint.getCheckpointID();
     }
 
@@ -156,11 +157,11 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         else if (stages.get(stageId).getStageType().toString().equals("TT")){
             throw new InvalidStageTypeException();
         }
-        Checkpoint newCheckpoint = new Checkpoint(location);
+        Checkpoint newCheckpoint = new Checkpoint(stageId, location);
         Stage stage = stages.get(stageId);
-        stage.addCheckpoint(newCheckpoint.getCheckpointID());
-        stages.put(stage.getStageID(), stage);
+        stage.addCheckpointID(newCheckpoint.getCheckpointID());
         checkpoints.put(newCheckpoint.getCheckpointID(), newCheckpoint);
+        stages.put(stage.getStageID(), stage);
         return newCheckpoint.getCheckpointID();
     }
 
@@ -169,8 +170,13 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         if (!checkpoints.containsKey(checkpointId)){
             throw new IDNotRecognisedException();
         }
-        for(Stage i : stages.values()){
-            ArrayList<Integer> checkpointIds = i.getCheckpointIDs(); //Need assistance
+        Checkpoint oldcheckpoint = checkpoints.get(checkpointId);
+        Stage stage = stages.get(oldcheckpoint.getStageID());
+        stage.deleteCheckpointID(checkpointId);
+
+        stages.put(stage.getStageID(), stage);
+        // More stuff here
+        checkpoints.remove(checkpointId);
         }
     }
 
@@ -192,9 +198,9 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException();
         }
-        Stage stage = stages.get(stageId);
-        int[] list = Arrays.sort(stage.getCheckpointIDs()); //Ideally, it would be best if we store the whole 'Checkpoint' class inside of Stage instead of just IDs
-        return stage.getCheckpointIDs(); //Same problem with 2nd previous method
+        int[] listIds = stages.get(stageId).getCheckpointIDs();
+        Arrays.sort(listIds);
+        return listIds; 
     }
 
     @Override
