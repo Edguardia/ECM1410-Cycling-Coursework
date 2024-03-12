@@ -1,9 +1,11 @@
 package cycling;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class CyclingPortalImpl implements MiniCyclingPortal {
@@ -56,8 +58,8 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
     @Override
     public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
-            
-            return 
+            Race race = races.get(raceId);
+            return race.getStageIDs().length;
         }
         else{
             throw new IDNotRecognisedException();
@@ -75,24 +77,36 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         if(stageName == null || stageName == "" || stageName.length() > 30 || stageName.contains(" ")){ throw new InvalidNameException(); }
         if (length < 5){ throw new InvalidLengthException(); }
         Stage newStage = new Stage(stageName, description, length, startTime, type);
-        
-        return 0;
+        Race race = races.get(raceId);
+        race.addStage(newStage.getStageID());
+        races.put(race.getRaceID(), race);
+        stages.put(newStage.getStageID(), newStage); //Check this one as well
+        return newStage.getStageID();
     }
 
     @Override
     public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
-        return new int[0];
+        if (races.containsKey(raceId)){
+            Race race = races.get(raceId);
+            //Diogo wishes the arrays to be sorted, so decide if you want to manually sort the stage IDs or do it automatically
+            Arrays.sort(race.getStageIDs());
+            return race.getStageIDs();
+        }
+        else{ throw new IDNotRecognisedException(); }
     }
 
     @Override
     public double getStageLength(int stageId) throws IDNotRecognisedException {
-        return 0;
+        if (stages.containsKey(stageId)){
+            return stages.get(stageId).getLength();
+        }
+        else{ throw new IDNotRecognisedException(); }
     }
 
     @Override
     public void removeStageById(int stageId) throws IDNotRecognisedException {
         if (stages.containsKey(stageId)){
-            int raceId = riders.get(stageId).getTeamID();
+            int raceId = riders.get(stageId).getTeamID(); //Remove stage's checkpoints and results
             races.get(raceId).deleteStage(stageId);
             races.remove(stageId);
         }
@@ -101,27 +115,79 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient, Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-        return 0;
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException();
+        }
+        else if (location < 0 || location > stages.get(stageId).getLength()){
+            throw new InvalidLocationException();
+        }
+        else if (stages.get(stageId).getState() == "waiting for results"){
+            throw new InvalidStageStateException();
+        }
+        else if (stages.get(stageId).getStageType().toString() == "TT"){
+            throw new InvalidStageTypeException();
+        }
+        Checkpoint newCheckpoint = new Checkpoint(location, type, length, averageGradient);
+        Stage stage = stages.get(stageId);
+        stage.addCheckpoint(newCheckpoint.getCheckpointID());
+        stages.put(stage.getStageID(), stage);
+        checkpoints.put(newCheckpoint.getCheckpointID(), newCheckpoint);
+        return newCheckpoint.getCheckpointID();
     }
 
     @Override
     public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
-        return 0;
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException();
+        }
+        else if (location < 0 || location > stages.get(stageId).getLength()){
+            throw new InvalidLocationException();
+        }
+        else if (stages.get(stageId).getState() == "waiting for results"){
+            throw new InvalidStageStateException();
+        }
+        else if (stages.get(stageId).getStageType().toString() == "TT"){
+            throw new InvalidStageTypeException();
+        }
+        Checkpoint newCheckpoint = new Checkpoint(location);
+        Stage stage = stages.get(stageId);
+        stage.addCheckpoint(newCheckpoint.getCheckpointID());
+        stages.put(stage.getStageID(), stage);
+        checkpoints.put(newCheckpoint.getCheckpointID(), newCheckpoint);
+        return newCheckpoint.getCheckpointID();
     }
 
     @Override
     public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
-
+        if (!checkpoints.containsKey(checkpointId)){
+            throw new IDNotRecognisedException();
+        }
+        for(Stage i : stages.values()){
+            ArrayList<Integer> checkpointIds = i.getCheckpointIDs(); //Need assistance
+        }
     }
 
     @Override
     public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
-
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException();
+        }
+        else if (stages.get(stageId).getState().toString() == "waiting for results"){
+            throw new InvalidStageStateException();
+        }
+        Stage stage = stages.get(stageId);
+        stage.setState("waiting for results");
+        stages.put(stage.getStageID(), stage);
     }
 
     @Override
     public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
-        return new int[0];
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException();
+        }
+        Stage stage = stages.get(stageId);
+        Arrays.sort(stage.) //Ideally, it would be best if we store the whole 'Checkpoint' class inside of Stage instead of just IDs
+        return new int[0]; //Same problem with 2nd previous method
     }
 
     @Override
@@ -246,7 +312,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public void saveCyclingPortal(String filename) throws IOException {
-
+        
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Race {
     public int[] getRiderIDs(){
         return riderIds.stream().mapToInt(i -> i).toArray();
     }
-    public int[] getStages(){
+    public int[] getStageIDs(){
         return stageIds.stream().mapToInt(i -> i).toArray();
     }
     public void setRaceID(int raceId){

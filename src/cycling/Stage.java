@@ -2,6 +2,7 @@ package cycling;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Stage {
@@ -13,7 +14,16 @@ public class Stage {
     private String state;
     private StageType type;
     private LocalDateTime startTime;
-    private Checkpoint[] checkpoints;
+    private ArrayList<Integer> checkpointIDs;
+    /*The checkpoint times need to be in Stage class because
+    * you are getting each time that is elapsed when a rider
+    * completes each checkpoint.
+    *
+    * The array of checkpoint times should ideally match the number
+    * of checkpoints within a stage. If you want to store the elapsed checkpoint 
+    * time inside of the respected checkpoint, that is fine. However, I suggest
+    * storing the array here 
+    */
 
     static private AtomicInteger currentId = new AtomicInteger(0);
 
@@ -46,8 +56,8 @@ public class Stage {
     public LocalDateTime getStartTime(){
         return startTime;
     }
-    public Checkpoint[] getCheckpoints(){
-        return checkpoints;
+    public int[] getCheckpointIDs(){ //Changed to checkpointIDs instead of the 'Checkpoints' array
+        return checkpointIDs.stream().mapToInt(i -> i).toArray();
     }
     public void setStageID(int stageId){
         this.stageId = stageId;
@@ -70,8 +80,13 @@ public class Stage {
     public void setstartTime(LocalDateTime startTime){
         this.startTime = startTime;
     }
-    public void setStageID(Checkpoint[] checkpoints){
-        this.checkpoints = checkpoints;
+    //Removed setting the checkpoint IDs
+
+    public void addCheckpoint(int checkpointID){ //Check if you still want to keep checkpoints instead of checkpoint IDs
+        checkpointIDs.add(checkpointID);
+    }
+    public void deleteCheckpoint(int checkpointID){
+        checkpointIDs.remove(checkpointID);
     }
     static public void atomicReset(){
         currentId.set(0);
