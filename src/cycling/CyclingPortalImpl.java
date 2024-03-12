@@ -326,11 +326,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void saveCyclingPortal(String filename) throws IOException {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
-            out.writeObject(races);
-            out.writeObject(stages);
-            out.writeObject(checkpoints); //Might just save the values from the hashmap instead of the hashmaps themselves
-            out.writeObject(riders);
-            out.writeObject(teams);
+            out.writeObject(this);
             out.close();
         } catch (IOException ex) { throw new IOException();}
     }
