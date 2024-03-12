@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class CyclingPortalImpl implements MiniCyclingPortal {
+public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
 
     HashMap<Integer, Race> races = new HashMap<>();
     HashMap<Integer, Stage> stages = new HashMap<>();
@@ -173,11 +173,11 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
         Checkpoint oldcheckpoint = checkpoints.get(checkpointId);
         Stage stage = stages.get(oldcheckpoint.getStageID());
         stage.deleteCheckpointID(checkpointId);
-
         stages.put(stage.getStageID(), stage);
+
         // More stuff here
+
         checkpoints.remove(checkpointId);
-        }
     }
 
     @Override
