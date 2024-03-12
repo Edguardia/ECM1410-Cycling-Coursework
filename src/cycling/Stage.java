@@ -3,6 +3,7 @@ package cycling;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Stage {
@@ -14,7 +15,7 @@ public class Stage {
     private String state;
     private StageType type;
     private LocalDateTime startTime;
-    private ArrayList<Integer> checkpointIDs;
+    private HashMap<Integer, Checkpoint> checkpoints;
     /*The checkpoint times need to be in Stage class because
     * you are getting each time that is elapsed when a rider
     * completes each checkpoint.
@@ -34,6 +35,7 @@ public class Stage {
         this.startTime = startTime;
         this.type = type;
         this.stageId = currentId.getAndIncrement();
+        checkpoints = new HashMap<>();
     }
     public int getStageID(){
         return stageId;
@@ -56,8 +58,13 @@ public class Stage {
     public LocalDateTime getStartTime(){
         return startTime;
     }
+    public HashMap<Integer, Checkpoint> getCheckpoint(){
+        return checkpoints;
+    }
     public int[] getCheckpointIDs(){ //Changed to checkpointIDs instead of the 'Checkpoints' array
-        return checkpointIDs.stream().mapToInt(i -> i).toArray();
+        ArrayList<Integer> checkpointIDList = new ArrayList<>();
+        checkpointIDList.addAll(checkpoints.keySet());
+        return checkpointIDList.stream().mapToInt(i -> i).toArray();
     }
     public void setStageID(int stageId){
         this.stageId = stageId;
@@ -80,14 +87,11 @@ public class Stage {
     public void setstartTime(LocalDateTime startTime){
         this.startTime = startTime;
     }
+    public void setCheckpoints(HashMap<Integer, Checkpoint> checkpoints){
+        this.checkpoints = checkpoints;
+    }
     //Removed setting the checkpoint IDs
 
-    public void addCheckpoint(int checkpointID){ //Check if you still want to keep checkpoints instead of checkpoint IDs
-        checkpointIDs.add(checkpointID);
-    }
-    public void deleteCheckpoint(int checkpointID){
-        checkpointIDs.remove(checkpointID);
-    }
     static public void atomicReset(){
         currentId.set(0);
     }
