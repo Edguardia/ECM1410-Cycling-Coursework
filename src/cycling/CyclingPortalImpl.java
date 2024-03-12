@@ -1,6 +1,10 @@
 package cycling;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -312,11 +316,37 @@ public class CyclingPortalImpl implements MiniCyclingPortal {
 
     @Override
     public void saveCyclingPortal(String filename) throws IOException {
-        
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
+            out.writeObject(races);
+            out.writeObject(stages);
+            out.writeObject(checkpoints); //Might just save the values from the hashmap instead of the hashmaps themselves
+            out.writeObject(riders);
+            out.writeObject(teams);
+            out.close();
+        } catch (IOException ex) { throw new IOException();}
     }
 
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))){
+            Object obj = in.readObject();
+            if (obj instanceof Race){
+                races = new HashMap<Integer, Race>();
+                races = 
+            }
+            if (obj instanceof Stage){
 
+            }
+            if (obj instanceof Checkpoint){
+                
+            }
+            if (obj instanceof Rider){
+                
+            }
+            if (obj instanceof Team){
+                
+            }
+            in.close();
+        }
     }
 }
