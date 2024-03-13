@@ -1,6 +1,8 @@
 package cycling;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Rider {
@@ -9,7 +11,8 @@ public class Rider {
     private String name;
     private int yearOfBirth;
     private int teamId;
-    private LocalTime[] checkpointTimes;
+    private HashMap<Integer, Integer> stageResults;
+    private HashMap<Integer, LocalTime[]> checkpointTimes;
 
     static private AtomicInteger currentId = new AtomicInteger(0);
 
@@ -18,6 +21,8 @@ public class Rider {
         this.name = name;
         this.yearOfBirth = yearOfBirth;
         this.riderId = currentId.getAndIncrement();
+        this.stageResults = new HashMap<>();
+        this.checkpointTimes = new HashMap<>();
     }
 
     public int getRiderID(){
@@ -32,8 +37,11 @@ public class Rider {
     public int getTeamID(){
         return teamId;
     }
-    public LocalTime[] getStageTimes(){
-        return checkpointTimes;
+    public int getStageResults(int stageId){
+        return stageResults.get(stageId);
+    }
+    public LocalTime[] getCheckpointTimes(int stageId){
+        return checkpointTimes.get(stageId);
     }
     public void setRiderID(int riderId){
         this.riderId = riderId;
@@ -47,8 +55,18 @@ public class Rider {
     public void setTeamID(int teamId){
         this.teamId = teamId;
     }
-    public void setCheckpointTimes(LocalTime[] checkpointTimes){
-        this.checkpointTimes = checkpointTimes;
+
+    public void addStageResults(int stageId, int result){
+        stageResults.put(stageId, result);
+    }
+    public void addCheckpointTimes(int stageId, LocalTime[] checkpointTimes){
+        this.checkpointTimes.put(stageId, checkpointTimes);
+    }
+    public void deleteStageResults(int stageId){
+        stageResults.remove(stageId);
+    }
+    public void deleteCheckpointTimes(int stageId){
+        checkpointTimes.remove(stageId);
     }
     static public void atomicReset(){
         currentId.set(0);

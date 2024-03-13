@@ -263,6 +263,8 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
             int teamId = riders.get(riderId).getTeamID();
             teams.get(teamId).deleteRider(riderId);
             riders.remove(riderId); //Check again
+            // More stuff here
+
         }
         else{
             throw new IDNotRecognisedException();
@@ -271,22 +273,66 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
 
     @Override
     public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpointTimes) throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
-
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID was not recognised.");
+        }
+        else if (!riders.containsKey(riderId)){
+            throw new IDNotRecognisedException("Rider ID was not recognised.");
+        }
+        else if (){
+            throw new DuplicatedResultException("The rider already has results for this stage.");
+        }
+        else if (checkpointTimes.length != (stages.get(stageId).getCheckpointIDs().length + 2)) {
+            throw new InvalidCheckpointTimesException("The number of checkpoint times does not equal 2 more than the total number of checkpoints within the stage.");
+        }
+        else if (!stages.get(stageId).getState().equals("waiting for results")){
+            throw new InvalidStageStateException("Cannot add results to the stage when it is not in the 'waiting for results' state.");
+        }
+        Rider currentRider = riders.get(riderId);
+        currentRider.addCheckpointTimes(stageId, checkpointTimes);
+        riders.put(currentRider.getRiderID(), currentRider);
     }
 
     @Override
     public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-        return new LocalTime[0];
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID was not recognised.");
+        }
+        else if (!riders.containsKey(riderId)){
+            throw new IDNotRecognisedException("Rider ID was not recognised.");
+        }
+        Rider currentRider = riders.get(riderId);
+        return currentRider.getCheckpointTimes(stageId); //Need to get all the checkpoint times and the total elapsed time
     }
 
     @Override
     public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID was not recognised.");
+        }
+        else if (!riders.containsKey(riderId)){
+            throw new IDNotRecognisedException("Rider ID was not recognised.");
+        }
+        Stage currentStage = stages.get(stageId);
+        if (!currentStage.getStageType().toString().equals("TT")){
+            Rider chosenRider = riders.get(riderId);
+            for (Rider rider : riders.values()){
+                
+            }
+            //Recursively check every rider that has the "same" time as our chosen rider
+        }
         return null;
     }
 
     @Override
     public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
-
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID was not recognised.");
+        }
+        if (!riders.containsKey(riderId)){
+            throw new IDNotRecognisedException("Rider ID was not recognised.");
+        }
+        riders.get(riderId).deleteStageResults(stageId);
     }
 
     @Override
