@@ -105,7 +105,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         if (stages.containsKey(stageId)){
             return stages.get(stageId).getLength();
         }
-        else{ throw new IDNotRecognisedException(); }
+        else{ throw new IDNotRecognisedException("Stage ID does not exist."); }
     }
 
     @Override
@@ -118,13 +118,13 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
 
             stages.remove(stageId);
         }
-        else{ throw new IDNotRecognisedException(); }
+        else{ throw new IDNotRecognisedException("Stage ID does not exist."); }
     }
 
     @Override
     public int addCategorizedClimbToStage(int stageId, Double location, CheckpointType type, Double averageGradient, Double length) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (location < 0 || location > stages.get(stageId).getLength()){
             throw new InvalidLocationException();
@@ -146,7 +146,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public int addIntermediateSprintToStage(int stageId, double location) throws IDNotRecognisedException, InvalidLocationException, InvalidStageStateException, InvalidStageTypeException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (location < 0 || location > stages.get(stageId).getLength()){
             throw new InvalidLocationException();
@@ -168,7 +168,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void removeCheckpoint(int checkpointId) throws IDNotRecognisedException, InvalidStageStateException {
         if (!checkpoints.containsKey(checkpointId)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Checkpoint ID was not recognised.");
         }
         Checkpoint oldcheckpoint = checkpoints.get(checkpointId);
         Stage stage = stages.get(oldcheckpoint.getStageID());
@@ -183,7 +183,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void concludeStagePreparation(int stageId) throws IDNotRecognisedException, InvalidStageStateException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (stages.get(stageId).getState().toString().equals("waiting for results")){
             throw new InvalidStageStateException();
@@ -196,7 +196,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public int[] getStageCheckpoints(int stageId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         int[] listIds = stages.get(stageId).getCheckpointIDs();
         Arrays.sort(listIds);
@@ -223,7 +223,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         if (teams.containsKey(teamId)){
             teams.remove(teamId);
         }
-        else{ throw new IDNotRecognisedException(); }
+        else{ throw new IDNotRecognisedException("Team ID does not exist."); }
     }
 
     @Override
@@ -239,14 +239,14 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
             return teams.get(teamId).getRiders();
         }
         else{
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Team ID does not exist.");
         }
     }
 
     @Override
     public int createRider(int teamID, String name, int yearOfBirth) throws IDNotRecognisedException, IllegalArgumentException {
         if (!teams.containsKey(teamID)){
-            throw new IDNotRecognisedException();
+            throw new IDNotRecognisedException("Team ID does not exist.");
         }
         else if(name == null || name.equals("") || yearOfBirth < 1900){
             throw new IllegalArgumentException();
@@ -274,12 +274,12 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void registerRiderResultsInStage(int stageId, int riderId, LocalTime... checkpointTimes) throws IDNotRecognisedException, DuplicatedResultException, InvalidCheckpointTimesException, InvalidStageStateException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException("Stage ID was not recognised.");
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (!riders.containsKey(riderId)){
-            throw new IDNotRecognisedException("Rider ID was not recognised.");
+            throw new IDNotRecognisedException("Rider ID does not exist.");
         }
-        else if (){
+        else if (riders.get(riderId).getStageResults(stageId) != 0){
             throw new DuplicatedResultException("The rider already has results for this stage.");
         }
         else if (checkpointTimes.length != (stages.get(stageId).getCheckpointIDs().length + 2)) {
@@ -296,28 +296,41 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public LocalTime[] getRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException("Stage ID was not recognised.");
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (!riders.containsKey(riderId)){
-            throw new IDNotRecognisedException("Rider ID was not recognised.");
+            throw new IDNotRecognisedException("Rider ID does not exist.");
         }
         Rider currentRider = riders.get(riderId);
-        return currentRider.getCheckpointTimes(stageId); //Need to get all the checkpoint times and the total elapsed time
+        LocalTime[] riderTimes = new LocalTime[currentRider.getCheckpointTimes(stageId).length + 1];
+        int i = 0;
+        for (LocalTime time : currentRider.getCheckpointTimes(stageId)){
+            riderTimes[i] = time;
+            i += 1;
+        }
+        riderTimes[i] = currentRider.calculateRidersTotalElapsedTime(stageId);
+        return riderTimes;
     }
 
     @Override
     public LocalTime getRiderAdjustedElapsedTimeInStage(int stageId, int riderId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException("Stage ID was not recognised.");
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         else if (!riders.containsKey(riderId)){
-            throw new IDNotRecognisedException("Rider ID was not recognised.");
+            throw new IDNotRecognisedException("Rider ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
         if (!currentStage.getStageType().toString().equals("TT")){
             Rider chosenRider = riders.get(riderId);
+            LocalTime chosenRiderTime = chosenRider.calculateRidersTotalElapsedTime(stageId);
             for (Rider rider : riders.values()){
-                
+                LocalTime riderTime = rider.calculateRidersTotalElapsedTime(stageId);
+                if (!rider.equals(chosenRider) && chosenRiderTime.is)){
+                    getRiderAdjustedElapsedTimeInStage(stageId, riderId);
+
+                    break;
+                }
             }
             //Recursively check every rider that has the "same" time as our chosen rider
         }
@@ -327,10 +340,10 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void deleteRiderResultsInStage(int stageId, int riderId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
-            throw new IDNotRecognisedException("Stage ID was not recognised.");
+            throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         if (!riders.containsKey(riderId)){
-            throw new IDNotRecognisedException("Rider ID was not recognised.");
+            throw new IDNotRecognisedException("Rider ID does not exist.");
         }
         riders.get(riderId).deleteStageResults(stageId);
     }
@@ -374,7 +387,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
             out.writeObject(this);
             out.close();
-        } catch (IOException ex) { throw new IOException();}
+        } catch (IOException ex) { throw new IOException("File not recognised.");}
     }
 
     @Override
@@ -398,6 +411,6 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
                 
             }
             in.close();
-        }
+        } catch (IOException ex) { throw new IOException("File not recognised."); }
     }
 }

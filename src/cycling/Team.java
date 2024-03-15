@@ -14,6 +14,9 @@ public class Team {
     static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Team(String teamName, String teamDescription){
+        this.teamName = new String();
+        this.teamDescription = new String();
+        this.riderIds = new ArrayList<>();
         this.teamId = currentId.getAndIncrement();
         this.teamName = teamName;
         this.teamDescription = teamDescription;

@@ -14,6 +14,11 @@ public class Checkpoint {
     static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Checkpoint(int stageId, Double location, CheckpointType type, Double length, Double averageGradient){
+        this.checkpointId = 0;
+        this.location = 0.0;
+        this.length = 0.0;
+        this.averageGradient = 0.0;
+        this.stageId = 0;
         this.stageId = stageId;
         this.location = location;
         this.length = length;
@@ -22,6 +27,11 @@ public class Checkpoint {
         this.checkpointId = currentId.getAndIncrement();
     }
     public Checkpoint(int stageId, Double location){
+        this.checkpointId = 0;
+        this.location = 0.0;
+        this.length = 0.0;
+        this.averageGradient = 0.0;
+        this.stageId = 0;
         this.stageId = stageId;
         this.location = location;
         this.checkpointId = currentId.getAndIncrement();
