@@ -390,33 +390,31 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
 
     @Override
     public void saveCyclingPortal(String filename) throws IOException {
+        ArrayList<Object> objList = new ArrayList<>();
+        objList.add(this.races);
+        objList.add(this.stages);
+        objList.add(this.checkpoints);
+        objList.add(this.riders);
+        objList.add(this.teams);
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
-            out.writeObject(this);
+
+            out.writeObject(objList);
             out.close();
         } catch (IOException ex) { throw new IOException("File not recognised.");}
     }
 
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
+        ArrayList<Object> objList = new ArrayList<>();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))){
             Object obj = in.readObject();
-            if (obj instanceof Race){
-                races = new HashMap<Integer, Race>();
-                races = 
-            }
-            if (obj instanceof Stage){
-
-            }
-            if (obj instanceof Checkpoint){
-                
-            }
-            if (obj instanceof Rider){
-                
-            }
-            if (obj instanceof Team){
-                
-            }
-            in.close();
+            objList = (ArrayList<Object>) in.readObject();
+            this.races = (HashMap<Integer, Race>) objList.get(0);
+            this.stages = (HashMap<Integer, Stage>) objList.get(1);
+            this.checkpoints = (HashMap<Integer, Checkpoint>) objList.get(2);
+            this.riders = (HashMap<Integer, Rider>) objList.get(3);
+            this.teams = (HashMap<Integer, Team>) objList.get(4);
         } catch (IOException ex) { throw new IOException("File not recognised."); }
     }
 }
+
