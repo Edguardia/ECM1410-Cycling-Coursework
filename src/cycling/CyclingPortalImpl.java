@@ -322,17 +322,8 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         }
         Stage currentStage = stages.get(stageId);
         if (!currentStage.getStageType().toString().equals("TT")){
-            Rider chosenRider = riders.get(riderId);
-            LocalTime chosenRiderTime = chosenRider.calculateRidersTotalElapsedTime(stageId);
-            for (Rider rider : riders.values()){
-                LocalTime riderTime = rider.calculateRidersTotalElapsedTime(stageId);
-                if (!rider.equals(chosenRider) && chosenRiderTime.is)){
-                    getRiderAdjustedElapsedTimeInStage(stageId, riderId);
-
-                    break;
-                }
-            }
-            //Recursively check every rider that has the "same" time as our chosen rider
+            currentStage.calculateRidersAdjustedTime(riderId); //need to change
+            return currentStage.getRiderAdjustedTimes(riderId);
         }
         return null;
     }
@@ -350,21 +341,36 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
 
     @Override
     public int[] getRidersRankInStage(int stageId) throws IDNotRecognisedException {
-        return new int[0];
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
+        Stage currentStage = stages.get(stageId);
+        return currentStage.calculateRidersRankInStages();
     }
 
     @Override
     public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
-        return new LocalTime[0];
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
+        Stage currentStage = stages.get(stageId);
+        return currentStage.calculateRankedAdjustedElapedTimesInStage();
     }
 
     @Override
     public int[] getRidersPointsInStage(int stageId) throws IDNotRecognisedException {
-        return new int[0];
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
+        
+        return ;
     }
 
     @Override
     public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
+        if (!stages.containsKey(stageId)){
+            throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
         return new int[0];
     }
 

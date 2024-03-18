@@ -21,9 +21,12 @@ public class Stage implements StageInterface{
     private LocalDateTime startTime;
     private ArrayList<Integer> checkpointIds;
     private HashMap<Integer, LocalTime> riderCompletionTimes;
+    private HashMap<Integer, LocalTime> riderAdjustedTimes;
     
-
     static private AtomicInteger currentId = new AtomicInteger(0);
+    static private int[] flatStagePoints = new int[] {50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2};
+    static private int[] mediumMountainStagePoints = new int[] {30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2};
+    static private int[] High
 
     public Stage(String stageName, String description, double length, LocalDateTime startTime, StageType type){
         this.stageId = 0;
@@ -65,8 +68,11 @@ public class Stage implements StageInterface{
     public int[] getCheckpointIDs(){ //Changed to checkpointIDs instead of the 'Checkpoints' array
         return checkpointIds.stream().mapToInt(i -> i).toArray();
     }
-    public LocalTime getRiderCompletionTimes(int stageId){
-        return riderCompletionTimes.get(stageId);
+    public LocalTime getRiderCompletionTimes(int riderId){
+        return riderCompletionTimes.get(riderId);
+    }
+    public LocalTime getRiderAdjustedTimes(int riderId){
+        return riderAdjustedTimes.get(riderId);
     }
     public void setStageID(int stageId){
         this.stageId = stageId;
@@ -103,7 +109,27 @@ public class Stage implements StageInterface{
     public void removeCompletionTime(int riderId){
         riderCompletionTimes.remove(riderId);
     }
+    public void addAdjustedTime(int riderId, LocalTime adjustedTime){
+        riderAdjustedTimes.put(riderId, adjustedTime);
+    }
+    public void removeAdjustedTime(int riderId){
+        riderAdjustedTimes.remove(riderId);
+    }
 
+    @Override
+    public LocalTime calculateRidersAdjustedTime(int riderId){
+        LocalTime chosenRiderTime = riderCompletionTimes.get(riderId);
+        for (int tempRiderId : riderCompletionTimes.keySet()){
+            LocalTime riderTime = riderCompletionTimes.get(tempRiderId);
+            if (riderId != tempRiderId && chosenRiderTime.isAfter(riderTime.plusSeconds(-1)) && chosenRiderTime.isBefore(riderTime)){
+                chosenRiderTime = calculateRidersAdjustedTime(riderId);
+                riderAdjustedTimes.put(riderId, riderTime);
+                break;
+            }
+            riderAdjustedTimes.put(riderId, chosenRiderTime);
+        }
+        return chosenRiderTime;
+    }
     @Override
     public int[] calculateRidersRankInStages(){
         LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
@@ -117,11 +143,36 @@ public class Stage implements StageInterface{
     }
     @Override
     public LocalTime[] calculateRankedAdjustedElapedTimesInStage(){
+        int[] sortedRiderIds = calculateRidersRankInStages();
+        ArrayList<LocalTime> adjustedTimesList = new ArrayList<>();
+        for (int riderId : sortedRiderIds){
+            adjustedTimesList.add(riderAdjustedTimes.get(riderId));
+        }
+        return adjustedTimesList.toArray(new LocalTime[adjustedTimesList.size()]);
 
     }
     @Override
     public int[] calculateRidersPointsInStage(){
+        int[] sortedRiderIds = calculateRidersRankInStages();
+        switch (type) {
+            case FLAT:
+            for (int riderId : sortedRiderIds) {
 
+            }
+            break;
+            case MEDIUM_MOUNTAIN:
+
+            break;
+            case HIGH_MOUNTAIN:
+
+            break;
+            case TT:
+            
+            break;
+            default:
+
+            break;
+        }
     }
     @Override
     public int[] calculateRidersMountainPointsInStage(){

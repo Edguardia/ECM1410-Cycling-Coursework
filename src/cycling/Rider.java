@@ -81,10 +81,7 @@ public class Rider implements RiderInterface{
         }
         return totalTime;
     }
-    @Override
-    public int calculateAdjustedElapsedTime(){
 
-    }
     static public void atomicReset(){
         currentId.set(0);
     }
