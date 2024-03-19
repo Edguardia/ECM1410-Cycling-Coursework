@@ -21,24 +21,19 @@ public class CyclingPortalTestApp {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		CyclingPortalImpl2 portal1 = initialisePortals();
+		//CyclingPortalImpl2 portal1 = initialisePortals();
+
 		System.out.println("The system compiled and started the execution...");
+		CyclingPortalImpl portal1 = new CyclingPortalImpl();
+		assert (portal1.getRaceIds().length == 0)
+				: "Initial Portal not empty as required or not returning an empty array.";
+		assert (portal1.getTeams().length == 0)
+				: "Initial Portal not empty as required or not returning an empty array.";
 
 
 
 
 
-
-
-		assert (portal1.getTeams().length == 10)
-				: "Portal1 should have ten team.";
-
-
-
-
-
-		System.out.println(Arrays.toString(portal1.getTeams()));
-		System.out.println(Arrays.toString(portal1.getRaceIds()));
 
 	}
 

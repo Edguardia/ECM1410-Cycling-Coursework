@@ -8,12 +8,9 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
-public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
+public class CyclingPortalImpl implements CyclingPortal, Serializable {
 
     HashMap<Integer, Race> races = new HashMap<>();
     HashMap<Integer, Stage> stages = new HashMap<>();
@@ -476,7 +473,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
         ArrayList<Object> objList = new ArrayList<>();
-        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))){
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
             Object obj = in.readObject();
             objList = (ArrayList<Object>) in.readObject();
             this.races = (HashMap<Integer, Race>) objList.get(0);
@@ -484,7 +481,170 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
             this.checkpoints = (HashMap<Integer, Checkpoint>) objList.get(2);
             this.riders = (HashMap<Integer, Rider>) objList.get(3);
             this.teams = (HashMap<Integer, Team>) objList.get(4);
-        } catch (IOException ex) { throw new IOException("File not recognised."); }
+        } catch (IOException ex) {
+            throw new IOException("File not recognised.");
+        }
     }
-}
+    @Override
+    public void removeRaceByName(String name) throws NameNotRecognisedException {
+        ArrayList<Race> allRaces = new ArrayList<>();
+        allRaces = (ArrayList<Race>) races.values();
+        boolean nameExists = false;
+        for (Race allRace : allRaces) {
+            if (allRace.getRaceName().equals(name)) {
+                nameExists = true;
+                races.remove(allRace.getRaceID());
+            }
+            if(!nameExists){
+                throw new NameNotRecognisedException("Name does not exist.");
+            }
+        }
+    }
+
+    private LinkedHashMap<Integer, LocalTime> getRiderTotalAdjustedTimeSorted(int raceId) {
+        HashMap<Integer, LocalTime> riderTotalAdjustedTime = new HashMap<>();
+        int[] raceStages = races.get(raceId).getStageIDs();
+        int[] ridersInRace = races.get(raceId).getRiderIDs();
+        for (int riderId : ridersInRace) {
+            riderTotalAdjustedTime.put(riderId, LocalTime.of(0, 0, 0));
+        }
+        for (int stage : raceStages) {
+            for (int rider : ridersInRace) {
+                LocalTime stageTime = stages.get(stage).getRiderAdjustedTimes(rider);
+                riderTotalAdjustedTime.put(rider, riderTotalAdjustedTime.get(rider).plusHours(stageTime.getHour()).plusMinutes(stageTime.getMinute()).plusSeconds(stageTime.getSecond()));
+            }
+        }
+        LinkedHashMap<Integer, LocalTime> sortedMap = new LinkedHashMap<>();
+        riderTotalAdjustedTime.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+        return sortedMap;
+    }
+    @Override
+    public int[] getRidersGeneralClassificationRank(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        }
+        else {
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+
+            return riderSortedTimes.keySet().stream().mapToInt(i -> i).toArray();
+        }
+    }
+
+
+    @Override
+    public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        }else {
+            return getRiderTotalAdjustedTimeSorted(raceId).values().toArray(LocalTime[]::new);
+        }
+    }
+
+    @Override
+    public int[] getRidersPointsInRace(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)) {
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+
+
+
+
+        }
+
+    }
+
+
+    @Override
+    public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)) {
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersMountainPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+
+
+
+
+        }
+
+    }
+
+    @Override
+    public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+            riderPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+            return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
+        }
+    }
+
+    @Override
+    public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersMountainPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+            riderPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+            return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
+        }
+
+    }}
 
