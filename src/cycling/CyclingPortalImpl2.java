@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.sql.Array;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -352,7 +351,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        return currentStage.calculateRankedAdjustedElapedTimesInStage();
+        return currentStage.getRankedAdjustedElapedTimesInStage();
     }
 
     @Override
@@ -360,14 +359,42 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
-
-        return ;
+        Stage currentStage = stages.get(stageId);
+        int[] sortedRiderIds = currentStage.calculateRidersRankInStages();
+        switch (currentStage.getStageType()) {
+            case FLAT:
+                for (int i = 0; i < currentStage.getFlatStagePoints().length; i++) {
+                    riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getFlatStagePoints()[i]);
+                }
+                break;
+            case MEDIUM_MOUNTAIN:
+                for (int i = 0; i < currentStage.getMediumMountainStagePoints().length; i++) {
+                    riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getMediumMountainStagePoints()[i]);
+                }
+                break;
+            case HIGH_MOUNTAIN:
+            case TT:
+                for (int i = 0; i < currentStage.getHighMountainAndTTStagePoints().length; i++) {
+                    riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getHighMountainAndTTStagePoints()[i]);
+                }
+                break;
+        }
+        int[] ridersPoints = new int[sortedRiderIds.length];
+        for (int i = 0; i < sortedRiderIds.length; i++){
+            ridersPoints[i] = riders.get(sortedRiderIds[i]).getStageResults(stageId);
+        }
+        return ridersPoints;
     }
 
     @Override
     public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
+        Stage currentStage = stages.get(stageId);
+        for (int checkpointId : currentStage.getCheckpointIDs()){
+            Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
+
         }
         return new int[0];
     }
@@ -431,7 +458,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
         }
     }
 
-    private LinkedHashMap<Integer, LocalTime> getRiderTotalAdjustedTime(int raceId) {
+    private LinkedHashMap<Integer, LocalTime> getRiderTotalAdjustedTimeSorted(int raceId) {
         HashMap<Integer, LocalTime> riderTotalAdjustedTime = new HashMap<>();
         int[] raceStages = races.get(raceId).getStageIDs();
         int[] ridersInRace = races.get(raceId).getRiderIDs();
@@ -454,7 +481,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("ID not recognised");
         }
         else {
-            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTime(raceId);
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
 
             return riderSortedTimes.keySet().stream().mapToInt(i -> i).toArray();
         }
@@ -466,7 +493,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
         if(!races.containsKey(raceId)){
             throw new IDNotRecognisedException("ID not recognised");
         }else {
-            return getRiderTotalAdjustedTime(raceId).values().toArray(LocalTime[]::new);
+            return getRiderTotalAdjustedTimeSorted(raceId).values().toArray(LocalTime[]::new);
         }
     }
 
@@ -476,14 +503,28 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("ID not recognised");
         } else {
             int[] ridersInRace = races.get(raceId).getRiderIDs();
-            for(int rider:ridersInRace) {
-                races.get(raceId).getStageIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            HashMap<Integer, Integer> riderPoints = new HashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+
+
 
 
             }
-            return new int[0];
+
         }
-    }
+
 
     @Override
     public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
