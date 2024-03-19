@@ -59,6 +59,7 @@ public class Race {
     public void deleteRider(int riderId){
         riderIds.remove(riderId);
     }
+    
     static public void atomicReset(){
         currentId.set(0);
     }

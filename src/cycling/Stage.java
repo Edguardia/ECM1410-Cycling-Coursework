@@ -3,11 +3,9 @@ package cycling;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -159,15 +157,6 @@ public class Stage implements StageInterface{
         }
         return adjustedTimesList.toArray(new LocalTime[adjustedTimesList.size()]);
 
-    }
-    @Override
-    public int[] calculateRidersPointsInStage(){
-        int[] sortedRiderIds = calculateRidersRankInStages();
-
-    }
-    @Override
-    public int[] getRidersMountainPointsInStage(){
-        int[] sortedRiderIds = calculateRidersRankInStages();
     }
 
     static public void atomicReset(){
