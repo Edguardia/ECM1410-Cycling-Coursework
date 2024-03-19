@@ -392,11 +392,48 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
+        int[] sortedStageRiderIds = currentStage.calculateRidersRankInStages();
         for (int checkpointId : currentStage.getCheckpointIDs()){
             Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
-
+            int[] sortedCheckpointRiderIds = currentCheckpoint.calculateRidersRankInCheckpoints();
+            switch(currentCheckpoint.getType()){
+                case SPRINT:
+                    for (int i = 0; i < currentCheckpoint.getIntermediateSprintPoints().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getIntermediateSprintPoints()[i]);
+                    }
+                    break;
+                case HC:
+                    for (int i = 0; i < currentCheckpoint.getMountainClimbHCPoints().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbHCPoints()[i]);
+                    }
+                    break;
+                case C1:
+                    for (int i = 0; i < currentCheckpoint.getMountainClimbC1Points().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC1Points()[i]);
+                    }
+                    break;
+                case C2:
+                    for (int i = 0; i < currentCheckpoint.getMountainClimbC2Points().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC2Points()[i]);
+                    }
+                    break;
+                case C3:
+                    for (int i = 0; i < currentCheckpoint.getMountainClimbC3Points().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC3Points()[i]);
+                    }
+                    break;
+                case C4:
+                    for (int i = 0; i < currentCheckpoint.getMountainClimbC4Points().length; i++){
+                        riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC4Points()[i]);
+                    }
+                    break;
+            }
         }
-        return new int[0];
+        int[] ridersMountainPoints = new int[sortedStageRiderIds.length];
+        for (int i = 0; i < sortedStageRiderIds.length; i++){
+            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).getStageResults(stageId);
+        }
+        return ridersMountainPoints;
     }
 
     @Override
@@ -505,7 +542,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             int[] ridersInRace = races.get(raceId).getRiderIDs();
             int[] raceStages = races.get(raceId).getStageIDs();
             LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
-            HashMap<Integer, Integer> riderPoints = new HashMap<>();
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
             for(int rider:ridersInRace){
                 riderPoints.put(rider, 0);
             }
@@ -528,17 +565,81 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
 
     @Override
     public int[] getRidersMountainPointsInRace(int raceId) throws IDNotRecognisedException {
-        return new int[0];
+        if(!races.containsKey(raceId)) {
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersMountainPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+
+
+
+
+        }
+
     }
 
     @Override
     public int[] getRidersPointClassificationRank(int raceId) throws IDNotRecognisedException {
-        return new int[0];
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+            riderPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+            return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
+        }
     }
 
     @Override
     public int[] getRidersMountainPointClassificationRank(int raceId) throws IDNotRecognisedException {
-        return new int[0];
+        if(!races.containsKey(raceId)){
+            throw new IDNotRecognisedException("ID not recognised");
+        } else {
+            int[] ridersInRace = races.get(raceId).getRiderIDs();
+            int[] raceStages = races.get(raceId).getStageIDs();
+            LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
+            LinkedHashMap<Integer, Integer> riderPoints = new LinkedHashMap<>();
+            for(int rider:ridersInRace){
+                riderPoints.put(rider, 0);
+            }
+            for(int stage:raceStages) {
+                int[] ridersPoints = getRidersMountainPointsInStage(stage);
+                for(int rider:riderSortedTimes.keySet()){
+                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+
+                }
+            }
+            LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
+            riderPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+            return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
+        }
+
     }
 }
 

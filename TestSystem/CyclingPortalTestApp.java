@@ -1,9 +1,5 @@
 
-import cycling.IDNotRecognisedException;
-import cycling.IllegalNameException;
-import cycling.InvalidNameException;
-
-import cycling.CyclingPortalImpl;
+import cycling.*;
 
 import java.util.Arrays;
 
@@ -25,7 +21,7 @@ public class CyclingPortalTestApp {
 	 * @param args not used
 	 */
 	public static void main(String[] args) {
-		CyclingPortalImpl portal1 = initialisePortals();
+		CyclingPortalImpl2 portal1 = initialisePortals();
 		System.out.println("The system compiled and started the execution...");
 
 
@@ -48,8 +44,8 @@ public class CyclingPortalTestApp {
 
 
 
-	public static CyclingPortalImpl initialisePortals() {
-		CyclingPortalImpl portal = new CyclingPortalImpl();
+	public static CyclingPortalImpl2 initialisePortals() {
+		CyclingPortalImpl2 portal = new CyclingPortalImpl2();
 
 		assert (portal.getRaceIds().length == 0)
 				: "Initial Portal not empty as required or not returning an empty array.";
