@@ -354,7 +354,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        return currentStage.calculateRankedAdjustedElapedTimesInStage();
+        return currentStage.getRankedAdjustedElapedTimesInStage();
     }
 
     @Override
@@ -362,14 +362,42 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
-        
-        return ;
+        Stage currentStage = stages.get(stageId);
+        int[] sortedRiderIds = currentStage.calculateRidersRankInStages();
+        switch (currentStage.getStageType()) {
+            case FLAT:
+            for (int i = 0; i < currentStage.getFlatStagePoints().length; i++) {
+                riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getFlatStagePoints()[i]);
+            }
+            break;
+            case MEDIUM_MOUNTAIN:
+            for (int i = 0; i < currentStage.getMediumMountainStagePoints().length; i++) {
+                riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getMediumMountainStagePoints()[i]);
+            }
+            break;
+            case HIGH_MOUNTAIN:
+            case TT:
+            for (int i = 0; i < currentStage.getHighMountainAndTTStagePoints().length; i++) {
+                riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getHighMountainAndTTStagePoints()[i]);
+            }
+            break;
+        }
+        int[] ridersPoints = new int[sortedRiderIds.length];
+        for (int i = 0; i < sortedRiderIds.length; i++){
+            ridersPoints[i] = riders.get(sortedRiderIds[i]).getStageResults(stageId);
+        }
+        return ridersPoints;
     }
 
     @Override
     public int[] getRidersMountainPointsInStage(int stageId) throws IDNotRecognisedException {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
+        }
+        Stage currentStage = stages.get(stageId);
+        for (int checkpointId : currentStage.getCheckpointIDs()){
+            Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
+            
         }
         return new int[0];
     }

@@ -12,6 +12,13 @@ public class Checkpoint {
     private CheckpointType type;
 
     static private AtomicInteger currentId = new AtomicInteger(0);
+    static private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    static private int[] mountainCheckpointHCPoint = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
+    static private int[] mountainCheckpoint1CPoint = new int[] {10, 8, 6, 4, 2, 1};
+    static private int[] mountainCheckpoint2CPoint = new int[] {5, 3, 2, 1};
+    static private int[] mountainCheckpoint34CPoint = new int[] {2, 1};
+    static private int[] mountainCheckpoint4CPoints = new int[] {1};
+
 
     public Checkpoint(int stageId, Double location, CheckpointType type, Double length, Double averageGradient){
         this.checkpointId = 0;
@@ -71,6 +78,10 @@ public class Checkpoint {
     }
     public void setStageID(int stageId){
         this.stageId = stageId;
+    }
+
+    public int[] calculateTotalRidersMountainPointsInStage(){
+
     }
     static public void atomicReset(){
         currentId.set(0);

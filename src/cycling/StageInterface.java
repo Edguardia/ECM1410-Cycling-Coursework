@@ -8,9 +8,7 @@ public interface StageInterface {
 
     int[] calculateRidersRankInStages();
 
-    LocalTime[] calculateRankedAdjustedElapedTimesInStage();
+    LocalTime[] getRankedAdjustedElapedTimesInStage();
 
-    int[] calculateRidersPointsInStage();
-
-    int[] calculateRidersMountainPointsInStage();
+    int[] getRidersMountainPointsInStage();
 }

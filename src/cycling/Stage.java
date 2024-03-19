@@ -3,6 +3,7 @@ package cycling;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -26,7 +27,7 @@ public class Stage implements StageInterface{
     static private AtomicInteger currentId = new AtomicInteger(0);
     static private int[] flatStagePoints = new int[] {50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2};
     static private int[] mediumMountainStagePoints = new int[] {30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2};
-    static private int[] High
+    static private int[] HighMountainAndTTStagePoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
     public Stage(String stageName, String description, double length, LocalDateTime startTime, StageType type){
         this.stageId = 0;
@@ -68,6 +69,15 @@ public class Stage implements StageInterface{
     public int[] getCheckpointIDs(){ //Changed to checkpointIDs instead of the 'Checkpoints' array
         return checkpointIds.stream().mapToInt(i -> i).toArray();
     }
+    public int[] getFlatStagePoints(){
+        return flatStagePoints;
+    }
+    public int[] getMediumMountainStagePoints(){
+        return mediumMountainStagePoints;
+    }
+    public int[] getHighMountainAndTTStagePoints(){
+        return HighMountainAndTTStagePoints;
+    }
     public LocalTime getRiderCompletionTimes(int riderId){
         return riderCompletionTimes.get(riderId);
     }
@@ -89,13 +99,12 @@ public class Stage implements StageInterface{
     public void setState(String state){
         this.state = state;
     }
-    public void setType(StageType type){
+    public void setStageType(StageType type){
         this.type = type;
     }
     public void setstartTime(LocalDateTime startTime){
         this.startTime = startTime;
     }
-    //Removed setting the checkpoint IDs
 
     public void addCheckpointID(int checkpointId){
         checkpointIds.add(checkpointId);
@@ -142,7 +151,7 @@ public class Stage implements StageInterface{
         return idList.stream().mapToInt(i -> i).toArray();
     }
     @Override
-    public LocalTime[] calculateRankedAdjustedElapedTimesInStage(){
+    public LocalTime[] getRankedAdjustedElapedTimesInStage(){
         int[] sortedRiderIds = calculateRidersRankInStages();
         ArrayList<LocalTime> adjustedTimesList = new ArrayList<>();
         for (int riderId : sortedRiderIds){
@@ -154,29 +163,11 @@ public class Stage implements StageInterface{
     @Override
     public int[] calculateRidersPointsInStage(){
         int[] sortedRiderIds = calculateRidersRankInStages();
-        switch (type) {
-            case FLAT:
-            for (int riderId : sortedRiderIds) {
 
-            }
-            break;
-            case MEDIUM_MOUNTAIN:
-
-            break;
-            case HIGH_MOUNTAIN:
-
-            break;
-            case TT:
-            
-            break;
-            default:
-
-            break;
-        }
     }
     @Override
-    public int[] calculateRidersMountainPointsInStage(){
-
+    public int[] getRidersMountainPointsInStage(){
+        int[] sortedRiderIds = calculateRidersRankInStages();
     }
 
     static public void atomicReset(){

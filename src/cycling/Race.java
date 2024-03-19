@@ -15,6 +15,8 @@ public class Race {
     static private AtomicInteger currentId = new AtomicInteger(0);
 
     public Race(String raceName, String raceDescription){
+        this.raceName = new String();
+        this.raceDescription = new String();
         this.raceName = raceName;
         this.raceDescription = raceDescription;
         this.raceId = currentId.getAndIncrement();

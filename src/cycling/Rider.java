@@ -5,13 +5,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Rider implements RiderInterface{
+public class Rider{
 
     private int riderId;
     private String name;
     private int yearOfBirth;
     private int teamId;
     private HashMap<Integer, Integer> stageResults;
+    private HashMap<Integer, Integer> CheckpointResults;
     private HashMap<Integer, LocalTime[]> checkpointTimes;
 
     static private AtomicInteger currentId = new AtomicInteger(0);
@@ -73,7 +74,6 @@ public class Rider implements RiderInterface{
         checkpointTimes.remove(stageId);
     }
 
-    @Override
     public LocalTime calculateRidersTotalElapsedTime(int stageId){
         LocalTime totalTime = LocalTime.of(0,0,0);
         for (LocalTime checkpointTime : getCheckpointTimes(stageId)){
