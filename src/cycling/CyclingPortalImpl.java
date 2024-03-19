@@ -290,6 +290,11 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         }
         Rider currentRider = riders.get(riderId);
         currentRider.addCheckpointTimes(stageId, checkpointTimes);
+        for(int checkpointId : stages.get(stageId).getCheckpointIDs()){
+            for (int i = 0; i < checkpointTimes.length; i++){
+                checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTimes[i]);
+            }
+        }
         riders.put(currentRider.getRiderID(), currentRider);
     }
 
@@ -395,11 +400,48 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
+        int[] sortedStageRiderIds = currentStage.calculateRidersRankInStages();
         for (int checkpointId : currentStage.getCheckpointIDs()){
             Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
-            
+            int[] sortedCheckpointRiderIds = currentCheckpoint.calculateRidersRankInCheckpoints();
+            switch(currentCheckpoint.getType()){
+                case SPRINT:
+                for (int i = 0; i < currentCheckpoint.getIntermediateSprintPoints().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getIntermediateSprintPoints()[i]);
+                }
+                break;
+                case HC:
+                for (int i = 0; i < currentCheckpoint.getMountainClimbHCPoints().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbHCPoints()[i]);
+                }
+                break;
+                case C1:
+                for (int i = 0; i < currentCheckpoint.getMountainClimbC1Points().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC1Points()[i]);
+                }
+                break;
+                case C2:
+                for (int i = 0; i < currentCheckpoint.getMountainClimbC2Points().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC2Points()[i]);
+                }
+                break;
+                case C3:
+                for (int i = 0; i < currentCheckpoint.getMountainClimbC3Points().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC3Points()[i]);
+                }
+                break;
+                case C4:
+                for (int i = 0; i < currentCheckpoint.getMountainClimbC4Points().length; i++){
+                    riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC4Points()[i]);
+                }
+                break;
+            }
         }
-        return new int[0];
+        int[] ridersMountainPoints = new int[sortedStageRiderIds.length];
+        for (int i = 0; i < sortedStageRiderIds.length; i++){
+            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).getStageResults(stageId);
+        }
+        return ridersMountainPoints;
     }
 
     @Override
