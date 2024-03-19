@@ -89,6 +89,13 @@ public class Rider{
         }
         return totalTime;
     }
+    public int calculateRidersTotalMountainPoints(int[] checkpointIds){
+        int totalMountainPoints = 0;
+        for (int i = 0; i < checkpointIds.length; i++){
+            totalMountainPoints += checkpointResults.get(checkpointIds[i]);
+        }
+        return totalMountainPoints;
+    }
 
     static public void atomicReset(){
         currentId.set(0);

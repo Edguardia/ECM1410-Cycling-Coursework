@@ -439,7 +439,7 @@ public class CyclingPortalImpl implements MiniCyclingPortal, Serializable {
         }
         int[] ridersMountainPoints = new int[sortedStageRiderIds.length];
         for (int i = 0; i < sortedStageRiderIds.length; i++){
-            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).getStageResults(stageId);
+            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).calculateRidersTotalMountainPoints(ridersMountainPoints);
         }
         return ridersMountainPoints;
     }
