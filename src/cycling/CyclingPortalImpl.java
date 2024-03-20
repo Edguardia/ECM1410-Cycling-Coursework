@@ -18,7 +18,11 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     HashMap<Integer, Rider> riders = new HashMap<>();
     HashMap<Integer, Team> teams = new HashMap<>();
 
-
+    /**
+	 * Get the races currently created in the platform.
+	 * 
+	 * @return An array of race IDs in the system or an empty array if none exists.
+	 */
     @Override
     public int[] getRaceIds() {
         ArrayList<Integer> raceList = new ArrayList<Integer>();
@@ -26,6 +30,21 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         return raceList.stream().mapToInt(i -> i).toArray();
     }
 
+    /**
+	 * The method creates a staged race in the platform with the given name and
+	 * description.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 * 
+	 * @param name        Race's name.
+	 * @param description Race's description (can be null).
+	 * @throws IllegalNameException If the name already exists in the platform.
+	 * @throws InvalidNameException If the name is null, empty, has more than 30
+	 *                              characters, or has white spaces.
+	 * @return the unique ID of the created race.
+	 * 
+	 */
     @Override
     public int createRace(String name, String description) throws IllegalNameException, InvalidNameException {
         if(name == null || name.equals("") || name.length() > 30 || name.contains(" ")){
@@ -41,6 +60,19 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         return newRace.getRaceID();
     }
 
+    /**
+	 * Get the details from a race.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 * 
+	 * @param raceId The ID of the race being queried.
+	 * @return Any formatted string containing the race ID, name, description, the
+	 *         number of stages, and the total length (i.e., the sum of all stages'
+	 *         length).
+	 * @throws IDNotRecognisedException If the ID does not match to any race in the
+	 *                                  system.
+	 */
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
@@ -49,6 +81,17 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         else { throw new IDNotRecognisedException(); }
     }
 
+    /**
+	 * The method removes the race and all its related information, i.e., stages,
+	 * checkpoints, and results.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 * 
+	 * @param raceId The ID of the race to be removed.
+	 * @throws IDNotRecognisedException If the ID does not match to any race in the
+	 *                                  system.
+	 */
     @Override
     public void removeRaceById(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
@@ -57,6 +100,17 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         else{ throw new IDNotRecognisedException(); }
     }
 
+    /**
+	 * The method queries the number of stages created for a race.
+	 * <p>
+	 * The state of this MiniCyclingPortal must be unchanged if any
+	 * exceptions are thrown.
+	 * 
+	 * @param raceId The ID of the race being queried.
+	 * @return The number of stages created for the race.
+	 * @throws IDNotRecognisedException If the ID does not match to any race in the
+	 *                                  system.
+	 */
     @Override
     public int getNumberOfStages(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
@@ -82,7 +136,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         Race race = races.get(raceId);
         race.addStage(newStage.getStageID());
         races.put(race.getRaceID(), race);
-        stages.put(newStage.getStageID(), newStage); //Check this one as well
+        stages.put(newStage.getStageID(), newStage);
         return newStage.getStageID();
     }
 
@@ -90,7 +144,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public int[] getRaceStages(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
             int[] listIds = races.get(raceId).getStageIDs();
-            //Diogo wishes the arrays to be sorted, so decide if you want to manually sort the stage IDs or do it automatically
             Arrays.sort(listIds);
             return listIds;
         }
@@ -108,7 +161,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     @Override
     public void removeStageById(int stageId) throws IDNotRecognisedException {
         if (stages.containsKey(stageId)){
-            int raceId = stages.get(stageId).getRaceID(); //Remove stage's checkpoints and results
+            int raceId = stages.get(stageId).getRaceID();
             races.get(raceId).deleteStage(stageId);
             races.remove(stageId);
             for(Rider rider : riders.values()){
