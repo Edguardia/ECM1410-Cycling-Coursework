@@ -108,11 +108,19 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     @Override
     public void removeStageById(int stageId) throws IDNotRecognisedException {
         if (stages.containsKey(stageId)){
-            int raceId = stages.get(stageId).getStageID(); //Remove stage's checkpoints and results
+            int raceId = stages.get(stageId).getRaceID(); //Remove stage's checkpoints and results
             races.get(raceId).deleteStage(stageId);
             races.remove(stageId);
-
-
+            for(Rider rider : riders.values()){
+                rider.deleteStageResults(stageId);
+                for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
+                    rider.deleteCheckpointTimes(checkpointId);
+                    rider.deleteCheckpointResults(checkpointId);
+                }
+            }
+            for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
+                checkpoints.remove(checkpointId);
+            }
             stages.remove(stageId);
         }
         else{ throw new IDNotRecognisedException("Stage ID does not exist."); }
@@ -169,11 +177,14 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         }
         Checkpoint oldcheckpoint = checkpoints.get(checkpointId);
         Stage stage = stages.get(oldcheckpoint.getStageID());
+        if (stages.get(stage.getStageID()).getState().equals("waiting for results")){
+            throw new InvalidStageStateException();
+        }
         stage.deleteCheckpointID(checkpointId);
         stages.put(stage.getStageID(), stage);
-
-        // More stuff here
-
+        for (Rider rider : riders.values()){
+            rider.deleteCheckpointResults(checkpointId);
+        }
         checkpoints.remove(checkpointId);
     }
 
@@ -324,7 +335,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         }
         Stage currentStage = stages.get(stageId);
         if (!currentStage.getStageType().toString().equals("TT")){
-            currentStage.calculateRidersAdjustedTime(riderId); //need to change
+            currentStage.calculateRidersAdjustedTime(riderId);
             return currentStage.getRiderAdjustedTimes(riderId);
         }
         return null;
@@ -529,8 +540,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             return riderSortedTimes.keySet().stream().mapToInt(i -> i).toArray();
         }
     }
-
-
     @Override
     public LocalTime[] getGeneralClassificationTimesInRace(int raceId) throws IDNotRecognisedException {
         if(!races.containsKey(raceId)){
@@ -560,12 +569,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
                 }
             }
             return riderPoints.values().stream().mapToInt(i -> i).toArray();
-
-
-
-
         }
-
     }
 
 
@@ -589,12 +593,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
                 }
             }
             return riderPoints.values().stream().mapToInt(i -> i).toArray();
-
-
-
-
         }
-
     }
 
     @Override
@@ -646,5 +645,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
         }
 
-    }}
+    }
+}
 

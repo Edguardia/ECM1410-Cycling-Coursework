@@ -14,6 +14,7 @@ public class Stage implements StageInterface{
     private int stageId;
     private String stageName;
     private String description;
+    private int raceId;
     private Double length;
     private String state;
     private StageType type;
@@ -52,6 +53,9 @@ public class Stage implements StageInterface{
     public String getDescription(){
         return description;
     }
+    public int getRaceID(){
+        return raceId;
+    }
     public Double getLength(){
         return length;
     }
@@ -64,7 +68,7 @@ public class Stage implements StageInterface{
     public LocalDateTime getStartTime(){
         return startTime;
     }
-    public int[] getCheckpointIDs(){ //Changed to checkpointIDs instead of the 'Checkpoints' array
+    public int[] getCheckpointIDs(){
         return checkpointIds.stream().mapToInt(i -> i).toArray();
     }
     public int[] getFlatStagePoints(){
@@ -90,6 +94,9 @@ public class Stage implements StageInterface{
     }
     public void setDescription(String description){
         this.description = description;
+    }
+    public void setRaceID(int raceId){
+        this.raceId = raceId;
     }
     public void setLength(Double length){
         this.length = length;
