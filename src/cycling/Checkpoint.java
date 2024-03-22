@@ -111,7 +111,7 @@ public class Checkpoint {
     public void addCompletionTime(int riderId, LocalTime completeTime){
         riderCompletionTimes.put(riderId, completeTime);
     }
-    public void removeCompletionTime(int riderId){
+    public void deleteCompletionTime(int riderId){
         riderCompletionTimes.remove(riderId);
     }
 
