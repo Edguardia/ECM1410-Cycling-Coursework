@@ -1,8 +1,6 @@
 
 import cycling.*;
 
-import java.util.Arrays;
-
 /**
  * A short program to illustrate an app testing some minimal functionality of a
  * concrete implementation of the CyclingPortal interface -- note you
@@ -15,6 +13,9 @@ import java.util.Arrays;
  */
 public class CyclingPortalTestApp {
 
+
+
+
 	/**
 	 * Test method.
 	 *
@@ -22,58 +23,78 @@ public class CyclingPortalTestApp {
 	 */
 	public static void main(String[] args) {
 		//CyclingPortalImpl2 portal1 = initialisePortals();
-
-		System.out.println("The system compiled and started the execution...");
 		CyclingPortalImpl portal1 = new CyclingPortalImpl();
-		assert (portal1.getRaceIds().length == 0)
-				: "Initial Portal not empty as required or not returning an empty array.";
-		assert (portal1.getTeams().length == 0)
-				: "Initial Portal not empty as required or not returning an empty array.";
-
-
-
-
-
+		testCreateTeam(portal1);
+		testRemoveTeam(portal1);
 
 	}
+		private static void testCreateTeam(CyclingPortalImpl portal1) {
+			System.out.println("The system compiled and started the execution...");
 
+			assert (portal1.getRaceIds().length == 0)
+					: "Initial Portal not empty as required or not returning an empty array.";
+			assert (portal1.getTeams().length == 0)
+					: "Initial Portal not empty as required or not returning an empty array.";
 
-
-	public static CyclingPortalImpl2 initialisePortals() {
-		CyclingPortalImpl2 portal = new CyclingPortalImpl2();
-
-		assert (portal.getRaceIds().length == 0)
-				: "Initial Portal not empty as required or not returning an empty array.";
-		assert (portal.getTeams().length == 0)
-				: "Initial Portal not empty as required or not returning an empty array.";
-
-		for (int i = 0; i < 10; i++) {
-			String teamName = "Team" + i;
-			String teamDesc = "Team" + i + "Desc";
 			try {
-				portal.createTeam(teamName, teamDesc);
+				portal1.createTeam("", "Team1Desc");
 			} catch (IllegalNameException e) {
-				e.printStackTrace();
+				System.out.println("Unexpected Exception");
 			} catch (InvalidNameException e) {
-				e.printStackTrace();
+				System.out.println("Expected Exception");
 			}
-
-			for (i = 0; i < portal.getTeams().length; i++) {
-				for (int j = 0; j < 10; j++) {
-
-					try {
-						portal.createRider(j, "Rider" + j, 1990 + j);
-					} catch (IDNotRecognisedException e) {
-						throw new RuntimeException(e);
-					}
-
-
-				}
-
+			try {
+				portal1.createTeam("white space", "Team1Desc");
+			} catch (IllegalNameException e) {
+				System.out.println("Unexpected Exception");
+			} catch (InvalidNameException e) {
+				System.out.println("Expected Exception");
 			}
+			try {
+				portal1.createTeam("GreaterThanThirtyCharacters123456789", "Team1Desc");
+			} catch (IllegalNameException e) {
+				System.out.println("Unexpected Exception");
+			} catch (InvalidNameException e) {
+				System.out.println("Expected Exception");
+			}
+			try {
+				portal1.createTeam("Team1", "Rider1");
+			} catch (IllegalNameException | InvalidNameException e) {
+				System.out.println("Unexpected Exception");
+			}
+			try {
+				portal1.createTeam("Team1", "Rider1");
+			} catch (IllegalNameException e) {
+				System.out.println("Expected Exception");
+			} catch (InvalidNameException e) {
+				System.out.println("Unexpected Exception");
+			}
+			assert (portal1.getTeams().length == 1)
+					: "Team not created as required or not returning an array with one element.";
+
 
 		}
-		return portal;
-	}
+		private static void testRemoveTeam(CyclingPortalImpl portal1){
+			try{
+				portal1.removeTeam(100);
+			} catch (IDNotRecognisedException e){
+				System.out.println("Remove Team Expected Exception");
+			}
+			try{
+				portal1.removeTeam(0);
+			} catch (IDNotRecognisedException e){
+				System.out.println("Remove Team Unexpected Exception");
+			}
+			assert (portal1.getTeams().length == 0)
+					: "Team not removed as required or not returning an empty array.";
+            try {
+                portal1.createTeam("Team1", "Team1Desc");
+            } catch (IllegalNameException | InvalidNameException e) {
+                throw new RuntimeException(e);
+            }
 
-}
+            assert (portal1.getTeams().length == 1)
+					: "Team not created as required or not returning an array with one element.";
+		}
+
+	}
