@@ -47,13 +47,11 @@ public class Stage implements StageInterface{
      * @param type The type of stage that the stage will be in the
      *             race.
      */
-    public Stage(String stageName, String description, double length, LocalDateTime startTime, StageType type){
+    public Stage(int raceId,String stageName, String description, double length, LocalDateTime startTime, StageType type){
         this.stageId = 0;
-        this.stageName = new String();
-        this.description = new String();
-        this.length = 0.0;
-        this.state = new String();
 
+        this.state = new String();
+        this.raceId = raceId;
         this.checkpointIds = new ArrayList<>();
         this.riderCompletionTimes = new HashMap<>();
         this.stageName = stageName;

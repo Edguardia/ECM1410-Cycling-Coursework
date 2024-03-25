@@ -1,5 +1,6 @@
 import cycling.*;
 
+import java.time.LocalDateTime;
 
 
 /**
@@ -35,6 +36,7 @@ public class CyclingPortalTestApp {
                 : "getRaceIds() not returning an empty array";
         assert (portal1.getTeams().length == 0)
                 : "getTeams() not returning an empty array";
+
 
         try {
             portal1.createTeam("", "Team1Desc");
@@ -161,12 +163,43 @@ public class CyclingPortalTestApp {
 			throw new RuntimeException(e);
 		}
 
+
+
+
+
+        try{
+            assert(portal1.getNumberOfStages(portal1.getRaceIds()[0])==0)
+                    :"Number of stages not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            portal1.addStageToRace(portal1.getRaceIds()[0], "Stage1", "Stage1Desc", 20, LocalDateTime.of(2021, 12, 12, 12, 12), StageType.FLAT);
+            portal1.addStageToRace(portal1.getRaceIds()[0], "Stage2", "Stage2Desc", 10, LocalDateTime.of(2021, 11, 12, 12, 12), StageType.HIGH_MOUNTAIN);
+            portal1.addStageToRace(portal1.getRaceIds()[0], "Stage3", "Stage3Desc", 10, LocalDateTime.of(2021, 10, 12, 12, 12), StageType.MEDIUM_MOUNTAIN);
+        } catch (IDNotRecognisedException | IllegalNameException | InvalidNameException | InvalidLengthException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            assert(portal1.getNumberOfStages(portal1.getRaceIds()[0])==3)
+                    :"Number of stages not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             System.out.println(portal1.viewRaceDetails(portal1.getRaceIds()[0]));
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }
 
+        try{
+            System.out.println(portal1.getStageLength(0));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 

@@ -93,8 +93,9 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
+        int totalLength = 0;
         if (races.containsKey(raceId)){
-            int totalLength = 0;
+
             for(Stage stage: stages.values()){
                 if(stage.getRaceID() == raceId) {
                     totalLength += stage.getLength();
@@ -197,7 +198,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new InvalidNameException("Invalid name, the stage name cannot contain any white spaces.");
         }
         if (length < 5){ throw new InvalidLengthException("The length of the stage cannot be less than 5km."); }
-        Stage newStage = new Stage(stageName, description, length, startTime, type);
+        Stage newStage = new Stage(raceId, stageName, description, length, startTime, type);
         Race race = races.get(raceId);
         race.addStage(newStage.getStageID());
         races.put(race.getRaceID(), race);
