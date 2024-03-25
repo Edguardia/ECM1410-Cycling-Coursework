@@ -266,11 +266,11 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             races.get(raceId).deleteStage(stageId);
             races.remove(stageId);
             for(Rider rider : riders.values()){
-                rider.deleteStageResults(stageId);
                 for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
                     rider.deleteCheckpointTimes(checkpointId);
                     rider.deleteCheckpointResults(checkpointId);
                 }
+                rider.deleteStageResults(stageId);
             }
             for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
                 checkpoints.remove(checkpointId);
@@ -694,6 +694,9 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Rider ID does not exist.");
         }
         Rider currentRider = riders.get(riderId);
+        if(currentRider.getCheckpointTimes(stageId)==null){
+            return new LocalTime[0];
+        }
         LocalTime[] riderTimes = new LocalTime[currentRider.getCheckpointTimes(stageId).length + 1];
         int i = 0;
         for (LocalTime time : currentRider.getCheckpointTimes(stageId)) {
@@ -765,7 +768,14 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         if (!riders.containsKey(riderId)){
             throw new IDNotRecognisedException("Rider ID does not exist.");
         }
-        riders.get(riderId).deleteStageResults(stageId);
+        Rider rider = riders.get(riderId);
+
+        for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
+
+            rider.deleteCheckpointResults(checkpointId);
+        }
+        rider.deleteCheckpointTimes(stageId);
+        rider.deleteStageResults(stageId);
     }
 
     /**

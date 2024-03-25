@@ -219,6 +219,7 @@ public class Rider implements Serializable {
      */
     public void deleteStageResults(int stageId){
         stageResults.remove(stageId);
+
     }
 
     /**

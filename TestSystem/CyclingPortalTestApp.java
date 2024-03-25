@@ -310,6 +310,12 @@ public class CyclingPortalTestApp {
             throw new RuntimeException(e);
         }
 
+        try{
+            System.out.println(Arrays.toString(portal1.getRiderResultsInStage(0, 1)));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
         System.out.println(Arrays.toString(portal1.getRaceIds()));
 
         try{
