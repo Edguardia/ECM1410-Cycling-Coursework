@@ -1,6 +1,7 @@
 import cycling.*;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 
 /**
@@ -164,7 +165,12 @@ public class CyclingPortalTestApp {
 		}
 
 
-
+        try {
+            assert (portal1.getRaceStages(portal1.getRaceIds()[0]).length == 0)
+                    : "Number of stages not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
 
 
         try{
@@ -197,6 +203,28 @@ public class CyclingPortalTestApp {
 
         try{
             System.out.println(portal1.getStageLength(0));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            assert (portal1.getRaceStages(portal1.getRaceIds()[0]).length == 3)
+                    : "Number of stages not as expected";
+            System.out.println(Arrays.toString(portal1.getRaceStages(portal1.getRaceIds()[0])));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            portal1.removeStageById(1);
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            assert (portal1.getRaceStages(portal1.getRaceIds()[0]).length == 2)
+                    : "Number of stages not as expected";
+            System.out.println(Arrays.toString(portal1.getRaceStages(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }
