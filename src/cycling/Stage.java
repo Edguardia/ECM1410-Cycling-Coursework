@@ -3,11 +3,7 @@ package cycling;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -373,19 +369,14 @@ public class Stage implements StageInterface, Serializable {
     public LocalTime calculateRidersAdjustedTime(int riderId){
         LocalTime chosenRiderTime = riderCompletionTimes.get(riderId);
         for (int tempRiderId : riderCompletionTimes.keySet()){
-            System.out.println(chosenRiderTime);
-            System.out.println(tempRiderId);
-            System.out.println(riderCompletionTimes.values());
             LocalTime riderTime = riderCompletionTimes.get(tempRiderId);
-            System.out.println(riderTime);
-            if (tempRiderId != riderId && riderTime.isBefore(chosenRiderTime.plusSeconds(1)) && riderTime.isAfter(chosenRiderTime)){
-                chosenRiderTime = calculateRidersAdjustedTime(tempRiderId);
+            if (riderId != tempRiderId && chosenRiderTime.isAfter(riderTime.plusSeconds(-1)) && chosenRiderTime.isBefore(riderTime)){
+                chosenRiderTime = calculateRidersAdjustedTime(riderId);
                 riderAdjustedTimes.put(riderId, riderTime);
                 break;
             }
+            riderAdjustedTimes.put(riderId, chosenRiderTime);
         }
-        System.out.println(chosenRiderTime);
-        riderAdjustedTimes.put(riderId, chosenRiderTime);
         return chosenRiderTime;
     }
 
@@ -399,14 +390,18 @@ public class Stage implements StageInterface, Serializable {
      */
     @Override
     public int[] calculateRidersRankInStage(){
-        LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
-        Collections.sort(timeList, (i1, i2) -> i1.getValue().compareTo(i2.getValue()));
-        Collections.sort(timeList, Collections.reverseOrder());
-        ArrayList<Integer> idList = new ArrayList<>();
-        for (Map.Entry<Integer, LocalTime> entry : timeList){
-            idList.add(entry.getKey());
-        }
-        return idList.stream().mapToInt(i -> i).toArray();
+//        LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
+//        Collections.sort(timeList, (i1, i2) -> i1.getValue().compareTo(i2.getValue())); //Lambda function
+//        Collections.sort(timeList, Collections.reverseOrder()); //Really needs to be tested
+//        ArrayList<Integer> idList = new ArrayList<>();
+//        for (Map.Entry<Integer, LocalTime> entry : timeList){
+//            idList.add(entry.getKey());
+//        }
+//        return idList.stream().mapToInt(i -> i).toArray();
+
+        LinkedHashMap<Integer, LocalTime> sortedMap = new LinkedHashMap<>();
+        riderCompletionTimes.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+        return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
     }
 
     /**
@@ -425,6 +420,8 @@ public class Stage implements StageInterface, Serializable {
             adjustedTimesList.add(riderAdjustedTimes.get(riderId));
         }
         return adjustedTimesList.toArray(new LocalTime[adjustedTimesList.size()]);
+
+
 
     }
 

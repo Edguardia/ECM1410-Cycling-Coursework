@@ -2,11 +2,7 @@ package cycling;
 
 import java.io.Serializable;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -30,12 +26,12 @@ public class Checkpoint implements Serializable {
     private HashMap<Integer, LocalTime> riderCompletionTimes = new HashMap<>();
 
     static private AtomicInteger currentId = new AtomicInteger(0);
-    static private final int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    static private final int[] mountainCheckpointHCPoints = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
-    static private final int[] mountainCheckpointC1Points = new int[] {10, 8, 6, 4, 2, 1};
-    static private final int[] mountainCheckpointC2Points = new int[] {5, 3, 2, 1};
-    static private final int[] mountainCheckpointC3Points = new int[] {2, 1};
-    static private final int[] mountainCheckpointC4Points = new int[] {1};
+    static final private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    static final private int[] mountainCheckpointHCPoints = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
+    static final private int[] mountainCheckpointC1Points = new int[] {10, 8, 6, 4, 2, 1};
+    static final private int[] mountainCheckpointC2Points = new int[] {5, 3, 2, 1};
+    static final private int[] mountainCheckpointC3Points = new int[] {2, 1};
+    static final private int[] mountainCheckpointC4Points = new int[] {1};
 
     /**
      * The first constructor method for this class, instantiates and
@@ -323,14 +319,18 @@ public class Checkpoint implements Serializable {
      *         finish time they achieved in the checkpoint.
      */
     public int[] calculateRidersRankInCheckpoints(){
-        LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
-        Collections.sort(timeList, (i1, i2) -> i1.getValue().compareTo(i2.getValue()));
-        Collections.sort(timeList, Collections.reverseOrder());
-        ArrayList<Integer> idList = new ArrayList<>();
-        for (Map.Entry<Integer, LocalTime> entry : timeList){
-            idList.add(entry.getKey());
-        }
-        return idList.stream().mapToInt(i -> i).toArray();
+//        LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
+//        Collections.sort(timeList, (i1, i2) -> i1.getValue().compareTo(i2.getValue())); //Lambda function
+//        Collections.sort(timeList, Collections.reverseOrder()); //Really needs to be tested
+//        ArrayList<Integer> idList = new ArrayList<>();
+//        for (Map.Entry<Integer, LocalTime> entry : timeList){
+//            idList.add(entry.getKey());
+//        }
+//        return idList.stream().mapToInt(i -> i).toArray();
+
+        LinkedHashMap<Integer, LocalTime> sortedMap = new LinkedHashMap<>();
+        riderCompletionTimes.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
+        return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
     }
 
     /**
