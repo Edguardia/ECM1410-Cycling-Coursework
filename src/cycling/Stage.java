@@ -391,7 +391,7 @@ public class Stage implements StageInterface{
      *         their finish time.
      */
     @Override
-    public int[] calculateRidersRankInStages(){
+    public int[] calculateRidersRankInStage(){
         LinkedList<Map.Entry<Integer, LocalTime>> timeList = new LinkedList<Map.Entry<Integer, LocalTime>>(riderCompletionTimes.entrySet());
         Collections.sort(timeList, (i1, i2) -> i1.getValue().compareTo(i2.getValue())); //Lambda function
         Collections.sort(timeList, Collections.reverseOrder()); //Really needs to be tested
@@ -412,7 +412,7 @@ public class Stage implements StageInterface{
      */
     @Override
     public LocalTime[] getRankedAdjustedElapsedTimesInStage(){
-        int[] sortedRiderIds = calculateRidersRankInStages();
+        int[] sortedRiderIds = calculateRidersRankInStage();
         ArrayList<LocalTime> adjustedTimesList = new ArrayList<>();
         for (int riderId : sortedRiderIds){
             adjustedTimesList.add(riderAdjustedTimes.get(riderId));

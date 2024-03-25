@@ -26,7 +26,7 @@ public interface StageInterface {
      * @return A sorted array of all the rider IDs based on
      *         their finish time.
      */
-    int[] calculateRidersRankInStages();
+    int[] calculateRidersRankInStage();
 
     /**
      * Method that finds all of the riders' adjusted elapsed

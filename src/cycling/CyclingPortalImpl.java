@@ -786,7 +786,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        return currentStage.calculateRidersRankInStages();
+        return currentStage.calculateRidersRankInStage();
     }
 
     /**
@@ -835,7 +835,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        int[] sortedRiderIds = currentStage.calculateRidersRankInStages();
+        int[] sortedRiderIds = currentStage.calculateRidersRankInStage();
         switch (currentStage.getStageType()) {
             case FLAT:
             for (int i = 0; i < currentStage.getFlatStagePoints().length; i++) {
@@ -881,7 +881,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        int[] sortedStageRiderIds = currentStage.calculateRidersRankInStages();
+        int[] sortedStageRiderIds = currentStage.calculateRidersRankInStage();
         for (int checkpointId : currentStage.getCheckpointIDs()){
             Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
             int[] sortedCheckpointRiderIds = currentCheckpoint.calculateRidersRankInCheckpoints();
@@ -1075,7 +1075,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         }
         else {
             LinkedHashMap<Integer, LocalTime> riderSortedTimes = getRiderTotalAdjustedTimeSorted(raceId);
-
             return riderSortedTimes.keySet().stream().mapToInt(i -> i).toArray();
         }
     }
