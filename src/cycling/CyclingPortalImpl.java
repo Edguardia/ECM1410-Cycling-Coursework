@@ -965,7 +965,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
 
             out.writeObject(objList);
-            out.close();
         } catch (IOException ex) { throw new IOException("File not recognised.");}
     }
 
@@ -987,7 +986,6 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
         ArrayList<Object> objList = new ArrayList<>();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            Object obj = in.readObject(); //Need to add exception
             objList = (ArrayList<Object>) in.readObject();
             this.races = (HashMap<Integer, Race>) objList.get(0);
             this.stages = (HashMap<Integer, Stage>) objList.get(1);

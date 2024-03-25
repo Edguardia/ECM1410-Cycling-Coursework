@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  * 
  */
-public class Stage implements StageInterface{
+public class Stage implements StageInterface, Serializable {
 
     private int stageId;
     private String stageName;

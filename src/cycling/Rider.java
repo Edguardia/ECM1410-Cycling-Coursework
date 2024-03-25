@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -13,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  */
 
-public class Rider{
+public class Rider implements Serializable {
 
     private int riderId;
     private String name;

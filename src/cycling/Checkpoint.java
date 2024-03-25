@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  */
 
-public class Checkpoint {
+public class Checkpoint implements Serializable {
     
     private int checkpointId;
     private Double location;

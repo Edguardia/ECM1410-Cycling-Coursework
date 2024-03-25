@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @version 1.0
  */
 
-public class Race {
+public class Race implements Serializable {
     
     private int raceId;
     private String raceName;
