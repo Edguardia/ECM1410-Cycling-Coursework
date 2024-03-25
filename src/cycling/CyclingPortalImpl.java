@@ -634,6 +634,8 @@ public class CyclingPortalImpl implements CyclingPortal {
             throw new InvalidStageStateException("Cannot add results to the stage when it is not in the 'waiting for results' state.");
         }
         Rider currentRider = riders.get(riderId);
+        int raceId = stages.get(stageId).getRaceID();
+        races.get(raceId).addRider(riderId);
         currentRider.addCheckpointTimes(stageId, checkpointTimes);
         stages.get(stageId).addCompletionTime(riderId, checkpointTimes[checkpointTimes.length - 1]);
         for (int checkpointId : stages.get(stageId).getCheckpointIDs()) {
@@ -641,6 +643,7 @@ public class CyclingPortalImpl implements CyclingPortal {
                 checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTime);
             }
         }
+
         stages.get(stageId).addCompletionTime(riderId, currentRider.calculateRidersTotalElapsedTime(stageId));
         riders.put(currentRider.getRiderID(), currentRider);
     }
@@ -795,11 +798,13 @@ public class CyclingPortalImpl implements CyclingPortal {
      */
     @Override
     public LocalTime[] getRankedAdjustedElapsedTimesInStage(int stageId) throws IDNotRecognisedException {
+
         if (!stages.containsKey(stageId)) {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
 
         Stage currentStage = stages.get(stageId);
+
         int raceId = currentStage.getRaceID();
         for (int riderId : races.get(raceId).getRiderIDs()) {
             currentStage.calculateRidersAdjustedTime(riderId);
