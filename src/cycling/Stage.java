@@ -34,9 +34,9 @@ public class Stage implements StageInterface, Serializable {
     private HashMap<Integer, LocalTime> riderAdjustedTimes;
     
     static private AtomicInteger currentId = new AtomicInteger(0);
-    static private int[] flatStagePoints = new int[] {50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2};
-    static private int[] mediumMountainStagePoints = new int[] {30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2};
-    static private int[] HighMountainAndTTStagePoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    static private final int[] flatStagePoints = new int[]{50, 30, 20, 18, 16, 14, 12, 10, 8, 7, 6, 5, 4, 3, 2};
+    static private final int[] mediumMountainStagePoints = new int[] {30, 25, 22, 19, 17, 15, 13, 11, 9, 7, 6, 5, 4, 3, 2};
+    static private final int[] HighMountainAndTTStagePoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
 
     /**
      * The constructor method for the class, instantiates and initialises 
