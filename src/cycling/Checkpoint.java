@@ -13,7 +13,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * CyclingPortal and the times and ranks that rider's got inside of 
  * the checkpoints.
  * 
+ * @author Edward Pratt, Alexander Hay
  * @version 1.0
+ * 
  */
 
 public class Checkpoint {

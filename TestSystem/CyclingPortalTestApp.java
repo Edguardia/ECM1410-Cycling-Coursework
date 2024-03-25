@@ -287,12 +287,9 @@ public class CyclingPortalTestApp {
                  InvalidCheckpointTimesException e) {
             throw new RuntimeException(e);
         }
-    }
-
-
-
-
 
     }
+
+}
 
 

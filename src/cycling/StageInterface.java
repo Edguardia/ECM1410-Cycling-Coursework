@@ -2,6 +2,16 @@ package cycling;
 
 import java.time.LocalTime;
 
+/**
+ * The Stage Interface. This interface calculates methods for
+ * the adjusted rider times as well as the ranking positions
+ * for each of the riders within the stage based on their
+ * finish times.
+ * 
+ * @author Edward Pratt, Alexander Hay
+ * @version 1.0
+ * 
+ */
 public interface StageInterface {
     
     /**

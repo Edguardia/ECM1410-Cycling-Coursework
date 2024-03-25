@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -19,7 +18,7 @@ import java.util.*;
  * 
  */
 
-public class CyclingPortalImpl implements CyclingPortal, Serializable {
+public class CyclingPortalImpl implements CyclingPortal {
 
     HashMap<Integer, Race> races = new HashMap<>();
     HashMap<Integer, Stage> stages = new HashMap<>();

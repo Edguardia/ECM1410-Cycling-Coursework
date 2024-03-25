@@ -10,7 +10,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * mountain points that they collect from each checkpoint they score
  * during a race.
  * 
+ * @author Edward Pratt, Alexander Hay
  * @version 1.0
+ * 
  */
 
 public class Rider{

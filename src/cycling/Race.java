@@ -8,7 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * and stores all the rider's participating in the race as well as
  * all the stages that are in the race.
  * 
+ * @author Edward Pratt, Alexander Hay
  * @version 1.0
+ * 
  */
 
 public class Race {

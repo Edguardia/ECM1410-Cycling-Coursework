@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * using a variety of original methods. This class also manages all
  * the stages within CyclingPortal.
  * 
+ * @author Edward Pratt, Alexander Hay
  * @version 1.0
  * 
  */

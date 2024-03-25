@@ -6,7 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Team class. This class manages all the teams within CyclingPortal.
  * 
+ * @author Edward Pratt, Alexander Hay
  * @version 1.0
+ * 
  */
 
 public class Team {
