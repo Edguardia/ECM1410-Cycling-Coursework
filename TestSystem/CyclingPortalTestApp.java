@@ -1,6 +1,7 @@
 import cycling.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 
@@ -257,6 +258,41 @@ public class CyclingPortalTestApp {
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
         }
+
+        try{
+            portal1.addIntermediateSprintToStage(0, 3.0);
+            portal1.addCategorizedClimbToStage(0, 5.0, CheckpointType.C1, 5.0, 10.0);
+        } catch (InvalidStageStateException | InvalidLocationException | IDNotRecognisedException |
+                 InvalidStageTypeException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            assert(portal1.getStageCheckpoints(portal1.getRaceStages(portal1.getRaceIds()[0])[0]).length==2)
+                    :"Number of checkpoints not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{portal1.concludeStagePreparation(0);
+        } catch (IDNotRecognisedException | InvalidStageStateException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(portal1.getTeamRiders(portal1.getTeams()[0])[0]);
+            LocalTime[] times = {LocalTime.of(12, 0), LocalTime.of(12, 5), LocalTime.of(12, 8), LocalTime.of(12,30)};
+            portal1.registerRiderResultsInStage(0,1, times);
+        } catch (InvalidStageStateException | DuplicatedResultException | IDNotRecognisedException |
+                 InvalidCheckpointTimesException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-}
+
+
+
+
+    }
+
+

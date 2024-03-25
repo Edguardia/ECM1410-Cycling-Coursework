@@ -99,6 +99,10 @@ public class Rider{
         return stageResults.get(stageId);
     }
 
+    public boolean hasStageResults(int stageId){
+        return stageResults.containsKey(stageId);
+    }
+
     /**
      * Gets the rider's results from the checkpoint
      * that is being enquired.
@@ -175,6 +179,8 @@ public class Rider{
     public void addStageResults(int stageId, int result){
         stageResults.put(stageId, result);
     }
+
+
 
     /**
      * Method that stores the ID of the checkpoint and the mountain

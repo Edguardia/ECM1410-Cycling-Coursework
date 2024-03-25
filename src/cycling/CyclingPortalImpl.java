@@ -646,7 +646,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         else if (!riders.containsKey(riderId)){
             throw new IDNotRecognisedException("Rider ID does not exist.");
         }
-        else if (riders.get(riderId).getStageResults(stageId) != 0){
+        else if (riders.get(riderId).hasStageResults(stageId)){
             throw new DuplicatedResultException("The rider already has results for this stage.");
         }
         else if (checkpointTimes.length != (stages.get(stageId).getCheckpointIDs().length + 2)) {
