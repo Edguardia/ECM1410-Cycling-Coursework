@@ -329,12 +329,20 @@ public class CyclingPortalTestApp {
         System.out.println(Arrays.toString(portal1.getRaceIds()));
 
         try{
-            portal1.createRider(1, "Team1Rider2", 1933);
-            portal1.createRider(1, "Team1Rider3", 1965);
-            portal1.createRider(1, "Team1Rider4", 2003);
-        } catch (IDNotRecognisedException e){
+            portal1.createRider(1, "Team1Rider2", 1965);
+            portal1.createRider(1, "Team1Rider3", 2003);
+            LocalTime[] times1 = {LocalTime.of(1, 37), LocalTime.of(0, 32), LocalTime.of(5, 38), LocalTime.of(2, 23)};
+            LocalTime[] times2 = {LocalTime.of(2, 12), LocalTime.of(3, 57), LocalTime.of(7, 18), LocalTime.of(1, 12)};
+            LocalTime[] times3 = {LocalTime.of(0, 44), LocalTime.of(1, 57), LocalTime.of(3, 22), LocalTime.of(2, 15)};
+            portal1.registerRiderResultsInStage(0, 1, times1);
+            portal1.registerRiderResultsInStage(0, 2, times2);
+            portal1.registerRiderResultsInStage(0, 3, times3);
+        } catch (InvalidStageStateException | DuplicatedResultException | IDNotRecognisedException |
+                 InvalidCheckpointTimesException e){
             throw new RuntimeException(e);
         }
+
+        
 
         try{
             System.out.println(Arrays.toString(portal1.getRankedAdjustedElapsedTimesInStage(0)));

@@ -259,7 +259,7 @@ public class Rider implements Serializable {
     public LocalTime calculateRidersTotalElapsedTime(int stageId){
         LocalTime totalTime = LocalTime.of(0,0,0);
         for (LocalTime checkpointTime : getCheckpointTimes(stageId)){
-            totalTime.plusHours(checkpointTime.getHour()).plusMinutes(checkpointTime.getMinute()).plusSeconds(checkpointTime.getSecond());
+            totalTime = totalTime.plusHours(checkpointTime.getHour()).plusMinutes(checkpointTime.getMinute()).plusSeconds(checkpointTime.getSecond());
         }
         return totalTime;
     }
