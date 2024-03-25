@@ -373,37 +373,37 @@ public class CyclingPortalTestApp {
                 :"Portal Not Reloaded As Expected";
         
         try{
-            System.out.println(Arrays.toString(portal1.getRidersGeneralClassificationRank(0)));
+            System.out.println(Arrays.toString(portal1.getRidersGeneralClassificationRank(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }
 
         try{
-            System.out.println(Arrays.toString(portal1.getGeneralClassificationTimesInRace(0)));
+            System.out.println(Arrays.toString(portal1.getGeneralClassificationTimesInRace(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }
         
         try{
-            System.out.println(Arrays.toString(portal1.getRidersPointsInRace(0)));
+            System.out.println(Arrays.toString(portal1.getRidersPointsInRace(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }
 
         try{
-            System.out.println(Arrays.toString(portal1.getRidersMountainPointsInRace(0)));
+            System.out.println(Arrays.toString(portal1.getRidersMountainPointsInRace(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }
 
         try{
-            System.out.println(Arrays.toString(portal1.getRidersPointClassificationRank(0)));
+            System.out.println(Arrays.toString(portal1.getRidersPointClassificationRank(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }
 
         try{
-            System.out.println(Arrays.toString(portal1.getRidersMountainPointClassificationRank(0)));
+            System.out.println(Arrays.toString(portal1.getRidersMountainPointClassificationRank(portal1.getRaceIds()[0])));
         } catch (IDNotRecognisedException e){
             throw new RuntimeException(e);
         }

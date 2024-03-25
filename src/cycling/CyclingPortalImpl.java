@@ -843,20 +843,21 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         Stage currentStage = stages.get(stageId);
         int[] sortedRiderIds = currentStage.calculateRidersRankInStage();
+
         switch (currentStage.getStageType()) {
             case FLAT:
-            for (int i = 0; i < currentStage.getFlatStagePoints().length; i++) {
+            for (int i = 0; i < sortedRiderIds.length && i < currentStage.getFlatStagePoints().length; i++) {
                 riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getFlatStagePoints()[i]);
             }
             break;
             case MEDIUM_MOUNTAIN:
-            for (int i = 0; i < currentStage.getMediumMountainStagePoints().length; i++) {
+            for (int i = 0; i < sortedRiderIds.length && i < currentStage.getMediumMountainStagePoints().length; i++) {
                 riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getMediumMountainStagePoints()[i]);
             }
             break;
             case HIGH_MOUNTAIN:
             case TT:
-            for (int i = 0; i < currentStage.getHighMountainAndTTStagePoints().length; i++) {
+            for (int i = 0; i < sortedRiderIds.length && i < currentStage.getHighMountainAndTTStagePoints().length; i++) {
                 riders.get(sortedRiderIds[i]).addStageResults(stageId, currentStage.getHighMountainAndTTStagePoints()[i]);
             }
             break;
@@ -891,35 +892,38 @@ public class CyclingPortalImpl implements CyclingPortal {
         int[] sortedStageRiderIds = currentStage.calculateRidersRankInStage();
         for (int checkpointId : currentStage.getCheckpointIDs()){
             Checkpoint currentCheckpoint = checkpoints.get(checkpointId);
+            if(currentCheckpoint.getType()==null){
+                continue;
+            }
             int[] sortedCheckpointRiderIds = currentCheckpoint.calculateRidersRankInCheckpoints();
             switch(currentCheckpoint.getType()){
                 case SPRINT:
-                for (int i = 0; i < currentCheckpoint.getIntermediateSprintPoints().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getIntermediateSprintPoints().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getIntermediateSprintPoints()[i]);
                 }
                 break;
                 case HC:
-                for (int i = 0; i < currentCheckpoint.getMountainClimbHCPoints().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getMountainClimbHCPoints().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbHCPoints()[i]);
                 }
                 break;
                 case C1:
-                for (int i = 0; i < currentCheckpoint.getMountainClimbC1Points().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getMountainClimbC1Points().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC1Points()[i]);
                 }
                 break;
                 case C2:
-                for (int i = 0; i < currentCheckpoint.getMountainClimbC2Points().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getMountainClimbC2Points().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC2Points()[i]);
                 }
                 break;
                 case C3:
-                for (int i = 0; i < currentCheckpoint.getMountainClimbC3Points().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getMountainClimbC3Points().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC3Points()[i]);
                 }
                 break;
                 case C4:
-                for (int i = 0; i < currentCheckpoint.getMountainClimbC4Points().length; i++){
+                for (int i = 0; i<sortedCheckpointRiderIds.length && i < currentCheckpoint.getMountainClimbC4Points().length; i++){
                     riders.get(sortedCheckpointRiderIds[i]).addCheckpointResults(checkpointId, currentCheckpoint.getMountainClimbC4Points()[i]);
                 }
                 break;
