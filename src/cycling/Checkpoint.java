@@ -1,5 +1,6 @@
 package cycling;
 
+import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 
  */
 
-public class Checkpoint {
+public class Checkpoint implements Serializable {
     
     private int checkpointId;
     private Double location;
@@ -29,12 +30,12 @@ public class Checkpoint {
     private HashMap<Integer, LocalTime> riderCompletionTimes = new HashMap<>();
 
     static private AtomicInteger currentId = new AtomicInteger(0);
-    static private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    static private int[] mountainCheckpointHCPoints = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
-    static private int[] mountainCheckpointC1Points = new int[] {10, 8, 6, 4, 2, 1};
-    static private int[] mountainCheckpointC2Points = new int[] {5, 3, 2, 1};
-    static private int[] mountainCheckpointC3Points = new int[] {2, 1};
-    static private int[] mountainCheckpointC4Points = new int[] {1};
+    static final private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
+    static final private int[] mountainCheckpointHCPoints = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
+    static final private int[] mountainCheckpointC1Points = new int[] {10, 8, 6, 4, 2, 1};
+    static final private int[] mountainCheckpointC2Points = new int[] {5, 3, 2, 1};
+    static final private int[] mountainCheckpointC3Points = new int[] {2, 1};
+    static final private int[] mountainCheckpointC4Points = new int[] {1};
 
     /**
      * The first constructor method for this class, instantiates and

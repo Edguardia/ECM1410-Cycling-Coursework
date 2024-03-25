@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
@@ -33,8 +35,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
     @Override
     public int[] getRaceIds() {
-        ArrayList<Integer> raceList = new ArrayList<Integer>();
-        raceList.addAll((races.keySet()));
+        ArrayList<Integer> raceList = new ArrayList<>((races.keySet()));
         return raceList.stream().mapToInt(i -> i).toArray();
     }
 
@@ -58,7 +59,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         if(name == null){
             throw new InvalidNameException("Invalid name, the race name cannot be null.");
         }
-        else if(name.equals("")){
+        else if(name.isEmpty()){
             throw new InvalidNameException("Invalid name, the race name cannot be empty.");
         }
         else if(name.length() > 30){
@@ -187,7 +188,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         if(stageName == null){
             throw new InvalidNameException("Invalid name, the stage name cannot be null.");
         }
-        else if(stageName.equals("")){
+        else if(stageName.isEmpty()){
             throw new InvalidNameException("Invalid name, the stage name cannot be empty.");
         }
         else if(stageName.length() > 30){
@@ -263,11 +264,11 @@ public class CyclingPortalImpl implements CyclingPortal {
             races.get(raceId).deleteStage(stageId);
             races.remove(stageId);
             for(Rider rider : riders.values()){
-                rider.deleteStageResults(stageId);
                 for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
                     rider.deleteCheckpointTimes(checkpointId);
                     rider.deleteCheckpointResults(checkpointId);
                 }
+                rider.deleteStageResults(stageId);
             }
             for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
                 checkpoints.remove(checkpointId);
@@ -416,7 +417,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
-        else if (stages.get(stageId).getState().toString().equals("waiting for results")){
+        else if (stages.get(stageId).getState().equals("waiting for results")){
             throw new InvalidStageStateException("The stage has already been set to 'waiting for results'.");
         }
         Stage stage = stages.get(stageId);
@@ -464,7 +465,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         if(name == null){
             throw new InvalidNameException("Invalid name, the team name cannot be null.");
         }
-        else if(name.equals("")){
+        else if(name.isEmpty()){
             throw new InvalidNameException("Invalid name, the team name cannot be empty.");
         }
         else if(name.length() > 30){
@@ -518,8 +519,7 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
     @Override
     public int[] getTeams() {
-        ArrayList<Integer> teamlist = new ArrayList<Integer>();
-        teamlist.addAll((teams.keySet()));
+        ArrayList<Integer> teamlist = new ArrayList<>((teams.keySet()));
         return teamlist.stream().mapToInt(i -> i).toArray();
     }
 
@@ -567,7 +567,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         else if(name == null){
             throw new IllegalArgumentException("Invalid name, the name of the rider cannot be null.");
         }
-        else if (name.equals("")){
+        else if (name.isEmpty()){
             throw new IllegalArgumentException("Invalid name, the name of the rider cannot be empty.");
         }
         else if (yearOfBirth < 1900){
@@ -657,8 +657,8 @@ public class CyclingPortalImpl implements CyclingPortal {
         Rider currentRider = riders.get(riderId);
         currentRider.addCheckpointTimes(stageId, checkpointTimes);
         for(int checkpointId : stages.get(stageId).getCheckpointIDs()){
-            for (int i = 0; i < checkpointTimes.length; i++){
-                checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTimes[i]);
+            for (LocalTime checkpointTime : checkpointTimes) {
+                checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTime);
             }
         }
         riders.put(currentRider.getRiderID(), currentRider);
@@ -691,13 +691,20 @@ public class CyclingPortalImpl implements CyclingPortal {
             throw new IDNotRecognisedException("Rider ID does not exist.");
         }
         Rider currentRider = riders.get(riderId);
+        if(currentRider.getCheckpointTimes(stageId)==null){
+            return new LocalTime[0];
+        }
         LocalTime[] riderTimes = new LocalTime[currentRider.getCheckpointTimes(stageId).length + 1];
         int i = 0;
-        for (LocalTime time : currentRider.getCheckpointTimes(stageId)){
+        for (LocalTime time : currentRider.getCheckpointTimes(stageId)) {
             riderTimes[i] = time;
-            i += 1;
+            i +=1;
         }
         riderTimes[i] = currentRider.calculateRidersTotalElapsedTime(stageId);
+        Duration elapsed = (Duration.between(riderTimes[0], riderTimes[riderTimes.length-2]));
+        LocalTime elapsedTotal = LocalTime.of(0,0,0);
+        elapsedTotal = elapsedTotal.plus(elapsed);
+        riderTimes[i] = elapsedTotal;
         return riderTimes;
     }
 
@@ -758,7 +765,14 @@ public class CyclingPortalImpl implements CyclingPortal {
         if (!riders.containsKey(riderId)){
             throw new IDNotRecognisedException("Rider ID does not exist.");
         }
-        riders.get(riderId).deleteStageResults(stageId);
+        Rider rider = riders.get(riderId);
+
+        for (int checkpointId : stages.get(stageId).getCheckpointIDs()){
+
+            rider.deleteCheckpointResults(checkpointId);
+        }
+        rider.deleteCheckpointTimes(stageId);
+        rider.deleteStageResults(stageId);
     }
 
     /**
@@ -958,7 +972,6 @@ public class CyclingPortalImpl implements CyclingPortal {
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))){
 
             out.writeObject(objList);
-            out.close();
         } catch (IOException ex) { throw new IOException("File not recognised.");}
     }
 
@@ -978,9 +991,8 @@ public class CyclingPortalImpl implements CyclingPortal {
 	 */
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-        ArrayList<Object> objList = new ArrayList<>();
+        ArrayList<Object> objList;
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
-            Object obj = in.readObject(); //Need to add exception
             objList = (ArrayList<Object>) in.readObject();
             this.races = (HashMap<Integer, Race>) objList.get(0);
             this.stages = (HashMap<Integer, Stage>) objList.get(1);
