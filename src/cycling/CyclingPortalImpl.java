@@ -6,8 +6,10 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Period;
 import java.util.*;
 
 /**
@@ -658,8 +660,8 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         Rider currentRider = riders.get(riderId);
         currentRider.addCheckpointTimes(stageId, checkpointTimes);
         for(int checkpointId : stages.get(stageId).getCheckpointIDs()){
-            for (int i = 0; i < checkpointTimes.length; i++){
-                checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTimes[i]);
+            for (LocalTime checkpointTime : checkpointTimes) {
+                checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTime);
             }
         }
         riders.put(currentRider.getRiderID(), currentRider);
@@ -694,11 +696,15 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         Rider currentRider = riders.get(riderId);
         LocalTime[] riderTimes = new LocalTime[currentRider.getCheckpointTimes(stageId).length + 1];
         int i = 0;
-        for (LocalTime time : currentRider.getCheckpointTimes(stageId)){
+        for (LocalTime time : currentRider.getCheckpointTimes(stageId)) {
             riderTimes[i] = time;
-            i += 1;
+            i +=1;
         }
         riderTimes[i] = currentRider.calculateRidersTotalElapsedTime(stageId);
+        Duration elapsed = (Duration.between(riderTimes[0], riderTimes[riderTimes.length-2]));
+        LocalTime elapsedTotal = LocalTime.of(0,0,0);
+        elapsedTotal = elapsedTotal.plus(elapsed);
+        riderTimes[i] = elapsedTotal;
         return riderTimes;
     }
 

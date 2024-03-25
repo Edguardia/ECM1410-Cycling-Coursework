@@ -182,7 +182,7 @@ public class CyclingPortalTestApp {
         }
 
         try{
-            portal1.addStageToRace(portal1.getRaceIds()[0], "Stage1", "Stage1Desc", 20, LocalDateTime.of(2021, 12, 12, 12, 12), StageType.FLAT);
+            portal1.addStageToRace(portal1.getRaceIds()[0], "Stage1", "Stage1Desc", 20, LocalDateTime.of(2021, 5, 12, 10, 12), StageType.FLAT);
             portal1.addStageToRace(portal1.getRaceIds()[0], "Stage2", "Stage2Desc", 10, LocalDateTime.of(2021, 11, 12, 12, 12), StageType.HIGH_MOUNTAIN);
             portal1.addStageToRace(portal1.getRaceIds()[0], "Stage3", "Stage3Desc", 10, LocalDateTime.of(2021, 10, 12, 12, 12), StageType.MEDIUM_MOUNTAIN);
         } catch (IDNotRecognisedException | IllegalNameException | InvalidNameException | InvalidLengthException e) {
@@ -281,13 +281,29 @@ public class CyclingPortalTestApp {
 
         try{
             System.out.println(portal1.getTeamRiders(portal1.getTeams()[0])[0]);
-            LocalTime[] times = {LocalTime.of(12, 0), LocalTime.of(12, 5), LocalTime.of(12, 8), LocalTime.of(12,30)};
+            LocalTime[] times = {LocalTime.of(12, 0), LocalTime.of(12, 5), LocalTime.of(12, 8), LocalTime.of(14,30)};
             portal1.registerRiderResultsInStage(0,1, times);
         } catch (InvalidStageStateException | DuplicatedResultException | IDNotRecognisedException |
                  InvalidCheckpointTimesException e) {
             throw new RuntimeException(e);
         }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRiderResultsInStage(0, 1)));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            portal1.deleteRiderResultsInStage(0,1);
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
+
+
 
 
 
