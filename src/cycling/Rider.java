@@ -40,6 +40,7 @@ public class Rider{
         this.teamId = 0;
         this.stageResults = new HashMap<>();
         this.checkpointTimes = new HashMap<>();
+        this.checkpointResults = new HashMap<>();
         this.teamId = teamId;
         this.name = name;
         this.yearOfBirth = yearOfBirth;
@@ -96,6 +97,10 @@ public class Rider{
      */
     public int getStageResults(int stageId){
         return stageResults.get(stageId);
+    }
+
+    public boolean hasStageResults(int stageId){
+        return stageResults.containsKey(stageId);
     }
 
     /**
@@ -174,6 +179,8 @@ public class Rider{
     public void addStageResults(int stageId, int result){
         stageResults.put(stageId, result);
     }
+
+
 
     /**
      * Method that stores the ID of the checkpoint and the mountain

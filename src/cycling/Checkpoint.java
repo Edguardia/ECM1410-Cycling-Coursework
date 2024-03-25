@@ -24,7 +24,7 @@ public class Checkpoint {
     private Double averageGradient;
     private int stageId;
     private CheckpointType type;
-    private HashMap<Integer, LocalTime> riderCompletionTimes;
+    private HashMap<Integer, LocalTime> riderCompletionTimes = new HashMap<>();
 
     static private AtomicInteger currentId = new AtomicInteger(0);
     static private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
