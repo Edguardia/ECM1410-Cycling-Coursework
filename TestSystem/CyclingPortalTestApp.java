@@ -130,6 +130,14 @@ public class CyclingPortalTestApp {
             throw new RuntimeException(e);
         }
 
+        try{
+            portal1.createRider(1, "Team1Rider1", 500);
+        } catch (IllegalArgumentException e){
+            System.out.println("Expected exception.");
+        } catch (IDNotRecognisedException e){
+            System.out.println("Unexpected exception.");
+        }
+
         try {
             portal1.createRider(1, "Team1Rider1", 1990);
         } catch (IDNotRecognisedException e) {
@@ -165,10 +173,9 @@ public class CyclingPortalTestApp {
 				:"Race not deleted as required";
 
 		try {portal1.createRace("Race1", "Race1Desc");
-		}catch (IllegalNameException | InvalidNameException e) {
+		} catch (IllegalNameException | InvalidNameException e) {
 			throw new RuntimeException(e);
 		}
-
 
         try {
             assert (portal1.getRaceStages(portal1.getRaceIds()[0]).length == 0)
@@ -322,6 +329,14 @@ public class CyclingPortalTestApp {
         System.out.println(Arrays.toString(portal1.getRaceIds()));
 
         try{
+            portal1.createRider(1, "Team1Rider2", 1933);
+            portal1.createRider(1, "Team1Rider3", 1965);
+            portal1.createRider(1, "Team1Rider4", 2003);
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
+
+        try{
             System.out.println(Arrays.toString(portal1.getRankedAdjustedElapsedTimesInStage(0)));
         } catch (IDNotRecognisedException e) {
             throw new RuntimeException(e);
@@ -354,9 +369,9 @@ public class CyclingPortalTestApp {
             throw new RuntimeException(e);
         }
 
-        assert portal1.getRaceIds().length ==1
+        assert (portal1.getRaceIds().length ==1)
                 :"Portal Not Reloaded As Expected";
-
+        
         try{
             System.out.println(Arrays.toString(portal1.getRidersGeneralClassificationRank(0)));
         } catch (IDNotRecognisedException e){
