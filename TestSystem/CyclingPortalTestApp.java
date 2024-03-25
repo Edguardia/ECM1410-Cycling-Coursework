@@ -1,9 +1,12 @@
 import cycling.*;
 
 import java.io.IOException;
+import java.net.IDN;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+
+import javax.management.RuntimeErrorException;
 
 
 /**
@@ -319,6 +322,24 @@ public class CyclingPortalTestApp {
         System.out.println(Arrays.toString(portal1.getRaceIds()));
 
         try{
+            System.out.println(Arrays.toString(portal1.getRankedAdjustedElapsedTimesInStage(0)));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersPointsInStage(0)));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersMountainPointsInStage(0)));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
             portal1.saveCyclingPortal("CyclingPortalTest");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -336,7 +357,41 @@ public class CyclingPortalTestApp {
         assert portal1.getRaceIds().length ==1
                 :"Portal Not Reloaded As Expected";
 
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersGeneralClassificationRank(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
 
+        try{
+            System.out.println(Arrays.toString(portal1.getGeneralClassificationTimesInRace(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
+        
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersPointsInRace(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersMountainPointsInRace(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersPointClassificationRank(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
+
+        try{
+            System.out.println(Arrays.toString(portal1.getRidersMountainPointClassificationRank(0)));
+        } catch (IDNotRecognisedException e){
+            throw new RuntimeException(e);
+        }
     }
 
 
