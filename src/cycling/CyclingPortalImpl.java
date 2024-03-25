@@ -94,7 +94,13 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
-            return races.get(raceId).getRaceDescription();
+            int totalLength = 0;
+            for(Stage stage: stages.values()){
+                if(stage.getRaceID() == raceId) {
+                    totalLength += stage.getLength();
+                }
+            }
+            return ("ID:"+raceId + " Name:"+ races.get(raceId).getRaceName() + " Description:"+ races.get(raceId).getRaceDescription() + " Number of Stages:"+ getNumberOfStages(raceId) + " Total Length:"+ totalLength);
         }
         else { throw new IDNotRecognisedException("Race ID does not exist."); }
     }
@@ -114,6 +120,14 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public void removeRaceById(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
             races.remove(raceId);
+            for (Stage stage : stages.values()){
+                if (stage.getRaceID() == raceId){
+                    for (int checkpointId : stage.getCheckpointIDs()){
+                        checkpoints.remove(checkpointId);
+                    }
+                    stages.remove(stage.getStageID());
+                }
+            }
         }
         else{ throw new IDNotRecognisedException("Race ID does not exist."); }
     }
@@ -483,6 +497,11 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public void removeTeam(int teamId) throws IDNotRecognisedException {
         if (teams.containsKey(teamId)){
             teams.remove(teamId);
+            for(Rider rider : riders.values()){
+                if (rider.getTeamID() == teamId){
+                    removeRider(rider.getRiderID());
+                }
+            }
         }
         else{ throw new IDNotRecognisedException("Team ID does not exist."); }
     }

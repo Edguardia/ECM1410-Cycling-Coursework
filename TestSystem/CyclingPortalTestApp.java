@@ -161,6 +161,12 @@ public class CyclingPortalTestApp {
 			throw new RuntimeException(e);
 		}
 
+        try {
+            System.out.println(portal1.viewRaceDetails(portal1.getRaceIds()[0]));
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
 
     }
 

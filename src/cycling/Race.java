@@ -33,6 +33,8 @@ public class Race {
         this.raceDescription = new String();
         this.raceName = raceName;
         this.raceDescription = raceDescription;
+        this.riderIds = new ArrayList<Integer>();
+        this.stageIds = new ArrayList<Integer>();
         this.raceId = currentId.getAndIncrement();
     }
 
