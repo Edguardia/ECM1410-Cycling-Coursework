@@ -229,6 +229,34 @@ public class CyclingPortalTestApp {
             throw new RuntimeException(e);
         }
 
+
+
+        try{portal1.addCategorizedClimbToStage(0, 3.0, CheckpointType.C1, 5.0, 10.0);
+        } catch (IDNotRecognisedException | InvalidLocationException |
+                 InvalidStageStateException | InvalidStageTypeException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            assert(portal1.getStageCheckpoints(portal1.getRaceStages(portal1.getRaceIds()[0])[0]).length==1)
+                    :"Number of checkpoints not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        try{
+            portal1.removeCheckpoint(0);
+        } catch (InvalidStageStateException | IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
+
+        try{
+            assert(portal1.getStageCheckpoints(portal1.getRaceStages(portal1.getRaceIds()[0])[0]).length==0)
+                    :"Number of checkpoints not as expected";
+        } catch (IDNotRecognisedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

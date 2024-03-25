@@ -40,6 +40,7 @@ public class Rider{
         this.teamId = 0;
         this.stageResults = new HashMap<>();
         this.checkpointTimes = new HashMap<>();
+        this.checkpointResults = new HashMap<>();
         this.teamId = teamId;
         this.name = name;
         this.yearOfBirth = yearOfBirth;

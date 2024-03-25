@@ -763,7 +763,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     }
 
     /**
-	 * Get the riders finished position in a a stage.
+	 * Get the riders finished position in a stage.
 	 * <p>
 	 * The state of this MiniCyclingPortal must be unchanged if any
 	 * exceptions are thrown.
@@ -816,7 +816,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 * exceptions are thrown.
 	 * 
 	 * @param stageId The ID of the stage being queried.
-	 * @return The ranked list of points each riders received in the stage, sorted
+	 * @return The ranked list of points each rider received in the stage, sorted
 	 *         by their elapsed time. An empty list if there is no result for the
 	 *         stage. These points should match the riders returned by
 	 *         {@link #getRidersRankInStage(int)}.
@@ -862,7 +862,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 * exceptions are thrown.
 	 * 
 	 * @param stageId The ID of the stage being queried.
-	 * @return The ranked list of mountain points each riders received in the stage,
+	 * @return The ranked list of mountain points each rider received in the stage,
 	 *         sorted by their finish time. An empty list if there is no result for
 	 *         the stage. These points should match the riders returned by
 	 *         {@link #getRidersRankInStage(int)}.

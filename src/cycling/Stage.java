@@ -59,6 +59,7 @@ public class Stage implements StageInterface{
         this.length = length;
         this.startTime = startTime;
         this.type = type;
+
         this.stageId = currentId.getAndIncrement();
     }
 
