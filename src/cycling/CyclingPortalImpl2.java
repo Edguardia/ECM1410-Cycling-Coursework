@@ -351,7 +351,7 @@ public class CyclingPortalImpl2 implements CyclingPortal, Serializable {
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
         Stage currentStage = stages.get(stageId);
-        return currentStage.getRankedAdjustedElapedTimesInStage();
+        return currentStage.getRankedAdjustedElapsedTimesInStage();
     }
 
     @Override

@@ -28,10 +28,10 @@ public class Checkpoint {
 
     static private AtomicInteger currentId = new AtomicInteger(0);
     static private int[] sprintCheckpointPoints = new int[] {20, 17, 15, 13, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1};
-    static private int[] mountainCheckpointHCPoint = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
-    static private int[] mountainCheckpointC1Point = new int[] {10, 8, 6, 4, 2, 1};
-    static private int[] mountainCheckpointC2Point = new int[] {5, 3, 2, 1};
-    static private int[] mountainCheckpointC3Point = new int[] {2, 1};
+    static private int[] mountainCheckpointHCPoints = new int[] {20, 15, 12, 10, 8, 6, 4, 2};
+    static private int[] mountainCheckpointC1Points = new int[] {10, 8, 6, 4, 2, 1};
+    static private int[] mountainCheckpointC2Points = new int[] {5, 3, 2, 1};
+    static private int[] mountainCheckpointC3Points = new int[] {2, 1};
     static private int[] mountainCheckpointC4Points = new int[] {1};
 
     /**
@@ -160,7 +160,7 @@ public class Checkpoint {
      *         for each of the riders based on their position.
      */
     public int[] getMountainClimbHCPoints(){
-        return mountainCheckpointHCPoint;
+        return mountainCheckpointHCPoints;
     }
 
     /**
@@ -172,7 +172,7 @@ public class Checkpoint {
      *         for each of the riders based on their position.
      */
     public int[] getMountainClimbC1Points(){
-        return mountainCheckpointC1Point;
+        return mountainCheckpointC1Points;
     }
 
     /**
@@ -184,7 +184,7 @@ public class Checkpoint {
      *         for each of the riders based on their position.
      */
     public int[] getMountainClimbC2Points(){
-        return mountainCheckpointC2Point;
+        return mountainCheckpointC2Points;
     }
 
     /**
@@ -196,7 +196,7 @@ public class Checkpoint {
      *         for each of the riders based on their position.
      */
     public int[] getMountainClimbC3Points(){
-        return mountainCheckpointC3Point;
+        return mountainCheckpointC3Points;
     }
 
     /**

@@ -36,5 +36,5 @@ public interface StageInterface {
      * @return A sorted array of all the riders' adjusted
      *         finish times based on their rank in the stage.
      */
-    LocalTime[] getRankedAdjustedElapedTimesInStage();
+    LocalTime[] getRankedAdjustedElapsedTimesInStage();
 }

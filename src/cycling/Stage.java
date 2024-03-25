@@ -412,7 +412,7 @@ public class Stage implements StageInterface{
      *         finish times based on their rank in the stage.
      */
     @Override
-    public LocalTime[] getRankedAdjustedElapedTimesInStage(){
+    public LocalTime[] getRankedAdjustedElapsedTimesInStage(){
         int[] sortedRiderIds = calculateRidersRankInStages();
         ArrayList<LocalTime> adjustedTimesList = new ArrayList<>();
         for (int riderId : sortedRiderIds){
