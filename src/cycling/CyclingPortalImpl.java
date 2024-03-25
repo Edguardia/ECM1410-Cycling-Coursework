@@ -986,8 +986,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public void removeRaceByName(String name) throws NameNotRecognisedException {
-        ArrayList<Race> allRaces = new ArrayList<>();
-        allRaces = (ArrayList<Race>) races.values();
+        ArrayList<Race> allRaces = new ArrayList<>(races.values());
         boolean nameExists = false;
         for (Race allRace : allRaces) {
             if (allRace.getRaceName().equals(name)) {
