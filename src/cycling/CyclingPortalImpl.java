@@ -93,8 +93,15 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public String viewRaceDetails(int raceId) throws IDNotRecognisedException {
+        int totalLength = 0;
         if (races.containsKey(raceId)){
-            return races.get(raceId).getRaceDescription();
+
+            for(Stage stage: stages.values()){
+                if(stage.getRaceID() == raceId) {
+                    totalLength += stage.getLength();
+                }
+            }
+            return ("ID:"+raceId + " Name:"+ races.get(raceId).getRaceName() + " Description:"+ races.get(raceId).getRaceDescription() + " Number of Stages:"+ getNumberOfStages(raceId) + " Total Length:"+ totalLength);
         }
         else { throw new IDNotRecognisedException("Race ID does not exist."); }
     }
@@ -114,6 +121,14 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public void removeRaceById(int raceId) throws IDNotRecognisedException {
         if (races.containsKey(raceId)){
             races.remove(raceId);
+            for (Stage stage : stages.values()){
+                if (stage.getRaceID() == raceId){
+                    for (int checkpointId : stage.getCheckpointIDs()){
+                        checkpoints.remove(checkpointId);
+                    }
+                    stages.remove(stage.getStageID());
+                }
+            }
         }
         else{ throw new IDNotRecognisedException("Race ID does not exist."); }
     }
@@ -183,7 +198,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
             throw new InvalidNameException("Invalid name, the stage name cannot contain any white spaces.");
         }
         if (length < 5){ throw new InvalidLengthException("The length of the stage cannot be less than 5km."); }
-        Stage newStage = new Stage(stageName, description, length, startTime, type);
+        Stage newStage = new Stage(raceId, stageName, description, length, startTime, type);
         Race race = races.get(raceId);
         race.addStage(newStage.getStageID());
         races.put(race.getRaceID(), race);
@@ -483,6 +498,11 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
     public void removeTeam(int teamId) throws IDNotRecognisedException {
         if (teams.containsKey(teamId)){
             teams.remove(teamId);
+            for(Rider rider : riders.values()){
+                if (rider.getTeamID() == teamId){
+                    removeRider(rider.getRiderID());
+                }
+            }
         }
         else{ throw new IDNotRecognisedException("Team ID does not exist."); }
     }
