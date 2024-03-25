@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Period;
 import java.util.*;
 
 /**
@@ -36,8 +35,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public int[] getRaceIds() {
-        ArrayList<Integer> raceList = new ArrayList<Integer>();
-        raceList.addAll((races.keySet()));
+        ArrayList<Integer> raceList = new ArrayList<>((races.keySet()));
         return raceList.stream().mapToInt(i -> i).toArray();
     }
 
@@ -61,7 +59,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         if(name == null){
             throw new InvalidNameException("Invalid name, the race name cannot be null.");
         }
-        else if(name.equals("")){
+        else if(name.isEmpty()){
             throw new InvalidNameException("Invalid name, the race name cannot be empty.");
         }
         else if(name.length() > 30){
@@ -190,7 +188,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         if(stageName == null){
             throw new InvalidNameException("Invalid name, the stage name cannot be null.");
         }
-        else if(stageName.equals("")){
+        else if(stageName.isEmpty()){
             throw new InvalidNameException("Invalid name, the stage name cannot be empty.");
         }
         else if(stageName.length() > 30){
@@ -419,7 +417,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         if (!stages.containsKey(stageId)){
             throw new IDNotRecognisedException("Stage ID does not exist.");
         }
-        else if (stages.get(stageId).getState().toString().equals("waiting for results")){
+        else if (stages.get(stageId).getState().equals("waiting for results")){
             throw new InvalidStageStateException("The stage has already been set to 'waiting for results'.");
         }
         Stage stage = stages.get(stageId);
@@ -467,7 +465,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         if(name == null){
             throw new InvalidNameException("Invalid name, the team name cannot be null.");
         }
-        else if(name.equals("")){
+        else if(name.isEmpty()){
             throw new InvalidNameException("Invalid name, the team name cannot be empty.");
         }
         else if(name.length() > 30){
@@ -521,8 +519,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public int[] getTeams() {
-        ArrayList<Integer> teamlist = new ArrayList<Integer>();
-        teamlist.addAll((teams.keySet()));
+        ArrayList<Integer> teamlist = new ArrayList<>((teams.keySet()));
         return teamlist.stream().mapToInt(i -> i).toArray();
     }
 
@@ -570,7 +567,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
         else if(name == null){
             throw new IllegalArgumentException("Invalid name, the name of the rider cannot be null.");
         }
-        else if (name.equals("")){
+        else if (name.isEmpty()){
             throw new IllegalArgumentException("Invalid name, the name of the rider cannot be empty.");
         }
         else if (yearOfBirth < 1900){
@@ -994,7 +991,7 @@ public class CyclingPortalImpl implements CyclingPortal, Serializable {
 	 */
     @Override
     public void loadCyclingPortal(String filename) throws IOException, ClassNotFoundException {
-        ArrayList<Object> objList = new ArrayList<>();
+        ArrayList<Object> objList;
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filename))) {
             objList = (ArrayList<Object>) in.readObject();
             this.races = (HashMap<Integer, Race>) objList.get(0);
