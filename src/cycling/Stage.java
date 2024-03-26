@@ -24,8 +24,8 @@ public class Stage implements StageInterface, Serializable {
     private String state;
     private StageType type;
     private LocalDateTime startTime;
-    private final ArrayList<Integer> checkpointIds;
-    private final HashMap<Integer, LocalTime> riderCompletionTimes;
+    private ArrayList<Integer> checkpointIds;
+    private HashMap<Integer, LocalTime> riderCompletionTimes;
     private HashMap<Integer, LocalTime> riderAdjustedTimes = new HashMap<>();
 
     static private final AtomicInteger currentId = new AtomicInteger(0);

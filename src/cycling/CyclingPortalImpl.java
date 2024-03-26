@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * CyclingPortalImpl class. This class is an implementation of the
@@ -635,7 +636,10 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         Rider currentRider = riders.get(riderId);
         int raceId = stages.get(stageId).getRaceID();
-        races.get(raceId).addRider(riderId);
+        List<Integer> currentAssociatedRiders = Arrays.stream(races.get(raceId).getRiderIDs()).boxed().collect(Collectors.toList());
+
+        if(!currentAssociatedRiders.contains(riderId)) {
+            races.get(raceId).addRider(riderId);}
         currentRider.addCheckpointTimes(stageId, checkpointTimes);
         stages.get(stageId).addCompletionTime(riderId, checkpointTimes[checkpointTimes.length - 1]);
         for (int checkpointId : stages.get(stageId).getCheckpointIDs()) {
@@ -1038,6 +1042,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         HashMap<Integer, LocalTime> riderTotalAdjustedTime = new HashMap<>();
         int[] raceStages = races.get(raceId).getStageIDs();
         int[] ridersInRace = races.get(raceId).getRiderIDs();
+
         for (int riderId : ridersInRace) {
             riderTotalAdjustedTime.put(riderId, LocalTime.of(0, 0, 0));
         }
