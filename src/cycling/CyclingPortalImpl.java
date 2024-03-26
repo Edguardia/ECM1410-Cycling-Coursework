@@ -803,12 +803,10 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
 
         Stage currentStage = stages.get(stageId);
-
         int raceId = currentStage.getRaceID();
         for (int riderId : races.get(raceId).getRiderIDs()) {
-            currentStage.calculateRidersAdjustedTime(riderId);
+            currentStage.addAdjustedTime(riderId, currentStage.calculateRidersAdjustedTime(riderId));
         }
-
         return currentStage.getRankedAdjustedElapsedTimesInStage();
     }
 
