@@ -1255,6 +1255,7 @@ public class CyclingPortalImpl implements CyclingPortal {
             LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
             riderPoints.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEachOrdered(x -> sortedMap.put(x.getKey(), x.getValue()));
             return sortedMap.keySet().stream().mapToInt(i -> i).toArray();
+
         }
     }
 
