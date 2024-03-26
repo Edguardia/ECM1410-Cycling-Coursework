@@ -1140,20 +1140,24 @@ public class CyclingPortalImpl implements CyclingPortal {
             for (int stage : raceStages) {
                 int[] riderRanks = getRidersRankInStage(stage);
                 int[] updatedRidersPoints = getRidersPointsInStage(stage);
-                HashMap<Integer, Integer> ranksAndPoints = new HashMap<>();
+                LinkedHashMap<Integer, Integer> ranksAndPoints = new LinkedHashMap<>();
                 for (int i = 0; i < riderRanks.length; i++) {
                     ranksAndPoints.put(riderRanks[i], updatedRidersPoints[i]);
                 }
-
+                System.out.println(riderSortedTimes);
                 for (int rider : riderSortedTimes.keySet()) {
                     if(ranksAndPoints.get(rider) == null){
                         continue;
-
                     }
                     riderPoints.put(rider, riderPoints.get(rider) + ranksAndPoints.get(rider));
                 }
             }
-            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+            int[] riderGeneralRank = getRidersGeneralClassificationRank(raceId);
+            ArrayList<Integer> riderPointsRank = new ArrayList<>();
+            for (int riderRank : riderGeneralRank){
+                riderPointsRank.add(riderPoints.get(riderRank));
+            }
+            return riderPointsRank.stream().mapToInt(i -> i).toArray();
         }
     }
 
@@ -1200,7 +1204,12 @@ public class CyclingPortalImpl implements CyclingPortal {
 
                 }
             }
-            return riderPoints.values().stream().mapToInt(i -> i).toArray();
+            int[] riderGeneralRank = getRidersGeneralClassificationRank(raceId);
+            ArrayList<Integer> riderPointsRank = new ArrayList<>();
+            for (int riderRank : riderGeneralRank){
+                riderPointsRank.add(riderPoints.get(riderRank));
+            }
+            return riderPointsRank.stream().mapToInt(i -> i).toArray();
         }
     }
 
@@ -1234,7 +1243,6 @@ public class CyclingPortalImpl implements CyclingPortal {
                 int[] ridersPoints = getRidersPointsInStage(stage);
                 for (int rider : riderSortedTimes.keySet()) {
                     riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
-
                 }
             }
             LinkedHashMap<Integer, Integer> sortedMap = new LinkedHashMap<>();
