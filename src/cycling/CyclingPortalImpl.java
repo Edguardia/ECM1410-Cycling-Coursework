@@ -1144,7 +1144,6 @@ public class CyclingPortalImpl implements CyclingPortal {
                 for (int i = 0; i < riderRanks.length; i++) {
                     ranksAndPoints.put(riderRanks[i], updatedRidersPoints[i]);
                 }
-                System.out.println(riderSortedTimes);
                 for (int rider : riderSortedTimes.keySet()) {
                     if(ranksAndPoints.get(rider) == null){
                         continue;
