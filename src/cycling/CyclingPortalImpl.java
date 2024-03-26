@@ -1141,7 +1141,6 @@ public class CyclingPortalImpl implements CyclingPortal {
                 int[] ridersPoints = getRidersPointsInStage(stage);
                 for (int rider : riderSortedTimes.keySet()) {
                     riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
-
                 }
             }
             return riderPoints.values().stream().mapToInt(i -> i).toArray();
