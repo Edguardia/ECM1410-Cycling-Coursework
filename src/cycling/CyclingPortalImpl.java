@@ -1043,9 +1043,10 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         for (int stage : raceStages) {
             for (int rider : ridersInRace) {
-                System.out.println(rider);
                 LocalTime stageTime = stages.get(stage).getRiderAdjustedTimes(rider);
-                System.out.println(stageTime);
+                if (stageTime == null){
+                    continue;
+                }
                 riderTotalAdjustedTime.put(rider, riderTotalAdjustedTime.get(rider).plusHours(stageTime.getHour()).plusMinutes(stageTime.getMinute()).plusSeconds(stageTime.getSecond()));
             }
         }
