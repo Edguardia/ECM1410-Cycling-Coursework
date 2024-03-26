@@ -272,10 +272,10 @@ public class Rider implements Serializable {
      * @return The total amount of mountain points that the rider
      * has accumulated from the race.
      */
-    public int calculateRidersTotalMountainPoints(int[] checkpointIds) {
+    public int calculateRidersTotalMountainPoints() {
         int totalMountainPoints = 0;
-        for (int i = 0; i < checkpointIds.length; i++) {
-            totalMountainPoints += checkpointResults.get(checkpointIds[i]);
+        for (int checkpointId : checkpointResults.keySet()) {
+            totalMountainPoints += checkpointResults.get(checkpointId);
         }
         return totalMountainPoints;
     }

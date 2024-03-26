@@ -107,7 +107,7 @@ public class Team implements Serializable {
 
     /**
      * Method that adds a rider to the list of riders
-     * who are affilitated with the team.
+     * who are affiliated with the team.
      *
      * @param riderId The ID of the rider being
      *                added to the team.

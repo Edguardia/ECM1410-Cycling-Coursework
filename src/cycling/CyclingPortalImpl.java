@@ -643,7 +643,6 @@ public class CyclingPortalImpl implements CyclingPortal {
                 checkpoints.get(checkpointId).addCompletionTime(riderId, checkpointTime);
             }
         }
-
         stages.get(stageId).addCompletionTime(riderId, currentRider.calculateRidersTotalElapsedTime(stageId));
         riders.put(currentRider.getRiderID(), currentRider);
     }
@@ -834,7 +833,6 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         Stage currentStage = stages.get(stageId);
         int[] sortedRiderIds = currentStage.calculateRidersRankInStage();
-
         switch (currentStage.getStageType()) {
             case FLAT:
                 for (int i = 0; i < sortedRiderIds.length && i < currentStage.getFlatStagePoints().length; i++) {
@@ -922,7 +920,7 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         int[] ridersMountainPoints = new int[sortedStageRiderIds.length];
         for (int i = 0; i < sortedStageRiderIds.length; i++) {
-            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).calculateRidersTotalMountainPoints(ridersMountainPoints);
+            ridersMountainPoints[i] = riders.get(sortedStageRiderIds[i]).calculateRidersTotalMountainPoints();
         }
         return ridersMountainPoints;
     }
@@ -1047,7 +1045,9 @@ public class CyclingPortalImpl implements CyclingPortal {
         }
         for (int stage : raceStages) {
             for (int rider : ridersInRace) {
+                System.out.println(rider);
                 LocalTime stageTime = stages.get(stage).getRiderAdjustedTimes(rider);
+                System.out.println(stageTime);
                 riderTotalAdjustedTime.put(rider, riderTotalAdjustedTime.get(rider).plusHours(stageTime.getHour()).plusMinutes(stageTime.getMinute()).plusSeconds(stageTime.getSecond()));
             }
         }
