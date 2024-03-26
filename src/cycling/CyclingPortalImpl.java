@@ -1138,9 +1138,19 @@ public class CyclingPortalImpl implements CyclingPortal {
                 riderPoints.put(rider, 0);
             }
             for (int stage : raceStages) {
-                int[] ridersPoints = getRidersPointsInStage(stage);
+                int[] riderRanks = getRidersRankInStage(stage);
+                int[] updatedRidersPoints = getRidersPointsInStage(stage);
+                HashMap<Integer, Integer> ranksAndPoints = new HashMap<>();
+                for (int i = 0; i < riderRanks.length; i++) {
+                    ranksAndPoints.put(riderRanks[i], updatedRidersPoints[i]);
+                }
+
                 for (int rider : riderSortedTimes.keySet()) {
-                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+                    if(ranksAndPoints.get(rider) == null){
+                        continue;
+
+                    }
+                    riderPoints.put(rider, riderPoints.get(rider) + ranksAndPoints.get(rider));
                 }
             }
             return riderPoints.values().stream().mapToInt(i -> i).toArray();
@@ -1175,9 +1185,18 @@ public class CyclingPortalImpl implements CyclingPortal {
                 riderPoints.put(rider, 0);
             }
             for (int stage : raceStages) {
-                int[] ridersPoints = getRidersMountainPointsInStage(stage);
+                int[] updatedRiderPoints = getRidersMountainPointsInStage(stage);
+                int[] riderRanks = getRidersRankInStage(stage);
+                HashMap<Integer,Integer> ranksAndPoints = new HashMap<>();
+                for (int i = 0; i < riderRanks.length; i++) {
+                    ranksAndPoints.put(riderRanks[i], updatedRiderPoints[i]);
+                }
+
                 for (int rider : riderSortedTimes.keySet()) {
-                    riderPoints.put(rider, riderPoints.get(rider) + ridersPoints[rider]);
+                    if(ranksAndPoints.get(rider) == null){
+                        continue;
+                    }
+                    riderPoints.put(rider, riderPoints.get(rider) + ranksAndPoints.get(rider));
 
                 }
             }
